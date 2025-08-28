@@ -250,7 +250,7 @@ GameObject:
   - component: {fileID: 5163083775737479130}
   - component: {fileID: 9090171043267746026}
   - component: {fileID: 2159559899661673667}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Visual
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -364,6 +364,7 @@ GameObject:
   - component: {fileID: 1050854531610041147}
   - component: {fileID: 3513033044825120759}
   - component: {fileID: 258279392839429948}
+  - component: {fileID: 6490250399747345164}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -379,7 +380,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5854065368263699373}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -1, z: -0, w: 0.00000010430811}
+  m_LocalRotation: {x: 0, y: -1, z: 0, w: 0}
   m_LocalPosition: {x: 6, y: 0, z: 13}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -405,9 +406,11 @@ MonoBehaviour:
   groundLimit: 12
   friction: 5
   slopeLimit: 60
+  playerVisuals: {fileID: 5170924813908807567}
+  playerCollider: {fileID: 2159559899661673667}
   additiveJump: 1
-  autoJump: 1
-  jumpHeight: 10
+  autoJump: 0
+  jumpHeight: 8
   gravity: 20
   airLimit: 1
   airAcceleration: 100
@@ -421,9 +424,6 @@ MonoBehaviour:
   thirdPersonCameraDistance: 3.5
   thirdPersonCameraHeight: 2.5
   thirdPersonCameraLookAtHeight: 2
-  inspectOrbitDistance: 2.5
-  inspectOrbitHeight: 0.5
-  inspectOrbitSensitivity: 2
 --- !u!114 &1050854531610041147
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -437,6 +437,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   interactionDistance: 5
+  ignoreLayers:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!54 &3513033044825120759
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -477,3 +480,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   staminaText: {fileID: 8634771904025528148}
+--- !u!114 &6490250399747345164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5854065368263699373}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 721d074d4b48e4d408d7aeb9b60c5dbf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  inspectOrbitDistance: 3
+  inspectOrbitHeight: 0.5
+  inspectOrbitSensitivity: 1

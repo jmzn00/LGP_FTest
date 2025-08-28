@@ -11,21 +11,30 @@ public class MovementController : MonoBehaviour
 
     [Header("User Settings")]
     [SerializeField] private float mouseSensitivity = 1f;
-
+    [Space]
     [Header("Settings")]
     [SerializeField] private float groundAcceleration = 100f;
     [SerializeField] private float groundLimit = 12f;
     [SerializeField] private float friction = 6f;
     [SerializeField] private float slopeLimit = 60f;
     [Space]
+    [Header("Crouch")]
+    [SerializeField] private GameObject playerVisuals;
+    [SerializeField] private CapsuleCollider playerCollider;
+    [Space]
+    [Header("Jump")]
     [SerializeField] private bool additiveJump = true;
     [SerializeField] private bool autoJump = true;
     [SerializeField] private float jumpHeight = 5f;
     [SerializeField] private float gravity = 16f;
+    private bool jumpPending;
+    private bool canJump = true;
     [Space]
+    [Header("AirMovement")]
     [SerializeField] private float airLimit = 1f;
     [SerializeField] private float airAcceleration = 100f;
     [Space]
+    [Header("Stamina / Dash")]
     [SerializeField] private int staminaAmount;
     [SerializeField] private int maxStamina;
     [SerializeField] private float dashAmount = 2f;
@@ -39,11 +48,13 @@ public class MovementController : MonoBehaviour
     [SerializeField] private float thirdPersonCameraDistance = 4f;
     [SerializeField] private float thirdPersonCameraHeight = 5f;
     [SerializeField] private float thirdPersonCameraLookAtHeight = 3f;
-
+    private CameraController _cameraController;
     private bool isThirdPersonCamera = false;
+    private bool overrideCamera = false;
 
     private Vector2 _moveInput;
     private Vector2 _lookInput;
+    public Vector2 LookInput => _lookInput;
 
     private Vector3 _velocity;
     private Vector3 _inputDir;
@@ -54,18 +65,12 @@ public class MovementController : MonoBehaviour
     private Vector3 groundNormal;
     private bool _isGrounded;
 
-    private bool jumpPending;
-    private bool canJump = true;
-
     private bool dashPending = false;
     private bool canDash = true;
     private bool isRegenerating = false;
 
     private MovingPlatform _currentPlatform;
     private Vector3 _lastPlatformPosition;
-
-
-    private Camera playerCamera;
 
     private PlayerUiManager _playerUi;
     
@@ -76,8 +81,7 @@ public class MovementController : MonoBehaviour
 
         _rb = GetComponent<Rigidbody>();
         _playerUi = GetComponent<PlayerUiManager>();
-
-        playerCamera = Camera.main;
+        _cameraController = GetComponent<CameraController>();
 
         staminaAmount = maxStamina;
 
@@ -105,6 +109,10 @@ public class MovementController : MonoBehaviour
         //InputManager.Instance.Actions.Player.ToggleThirdPerson.canceled += ctx => isThirdPersonCamera = false;
 
         InputManager.Instance.Actions.Player.Sprint.performed += ctx => dashPending = true;
+
+        InputManager.Instance.Actions.Player.Crouch.performed += ctx => Crouch(true);
+        InputManager.Instance.Actions.Player.Crouch.canceled += ctx => Crouch(false);
+
     }
     private void GetMovementInput()
     {
@@ -129,11 +137,6 @@ public class MovementController : MonoBehaviour
     {
         GetMovementInput();
         GetMouseInput();
-
-        if(currentInspectable != null) 
-        {
-            inspectOribitAngle += _lookInput.x * inspectOrbitSensitivity;
-        }
     }
 
     private void FixedUpdate()
@@ -180,6 +183,18 @@ public class MovementController : MonoBehaviour
         CameraFollow();
 
         transform.rotation = Quaternion.Euler(0f, _inputRot.y, 0f);
+    }
+
+    private void Crouch(bool val) 
+    {
+        if (val) 
+        {
+            playerVisuals.transform.localScale = new Vector3(1f, 0.5f, 1f);            
+        }
+        else 
+        {
+            playerVisuals.transform.localScale = new Vector3(1f, 1f, 1f);
+        }
     }
 
 
@@ -279,50 +294,29 @@ public class MovementController : MonoBehaviour
     {
         _velocity.y -= gravity * Time.deltaTime;
     }
-
-    private bool isInspecting = false;
-    private InspectableObject currentInspectable = null;
-
-    private float inspectOribitAngle = 0f;
-    [SerializeField] private float inspectOrbitDistance = 2.5f;
-    [SerializeField] private float inspectOrbitHeight = 1.5f;
-    [SerializeField] private float inspectOrbitSensitivity = 2f;
-
-    public void SetInspectable(InspectableObject iObj) 
+    
+    
+    public void SetCameraOverride(bool value) 
     {
-            currentInspectable = iObj;
+        overrideCamera = value;
     }
     private void CameraFollow() 
     {
-        if (currentInspectable == null) 
+        if (!overrideCamera) 
         {
             if (isThirdPersonCamera)
             {
                 Vector3 cameraPos = transform.position - transform.forward
                     * thirdPersonCameraDistance + Vector3.up * thirdPersonCameraHeight;
-                playerCamera.transform.position = cameraPos;
-                playerCamera.transform.LookAt(transform.position + Vector3.up * thirdPersonCameraLookAtHeight);
+
+                _cameraController.SetCameraPosition(cameraPos);
+                _cameraController.SetCameraLookAt(transform.position + Vector3.up * thirdPersonCameraLookAtHeight);
             }
             else
             {
-                playerCamera.transform.position = transform.position + cameraOffset;
-                playerCamera.transform.rotation = Quaternion.Euler(_inputRot.x, _inputRot.y, 0f);
+                _cameraController.SetCameraPosition(transform.position + cameraOffset);
+                _cameraController.SetCameraRotation(Quaternion.Euler(_inputRot.x, _inputRot.y, 0f));
             }
-        }
-        else 
-        {
-            Transform inspectableTransform = currentInspectable.transform;
-
-            float radians = inspectOribitAngle * Mathf.Deg2Rad;
-            Vector3 offset = new Vector3(
-                Mathf.Sin(radians) * inspectOrbitDistance,
-                inspectOrbitHeight,
-                Mathf.Cos(radians) * inspectOrbitDistance
-                );
-
-            Vector3 cameraPos = inspectableTransform.position + offset;
-            playerCamera.transform.position = cameraPos;
-            playerCamera.transform.LookAt(inspectableTransform.position + Vector3.up * inspectOrbitHeight);
         }
         
     } 

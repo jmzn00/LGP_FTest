@@ -3,12 +3,15 @@ using UnityEngine;
 public class PlayerInteraction : MonoBehaviour
 {
     [SerializeField] private float interactionDistance = 5f;
-    private MovementController playerMovementController;
+    private MovementController _playerMovementController;
+    private CameraController _cameraController;
+    [SerializeField] LayerMask ignoreLayers;
 
     private void Start()
     {
         SubscribeInputs();
-        playerMovementController = GetComponent<MovementController>();
+        _playerMovementController = GetComponent<MovementController>();
+        _cameraController = GetComponent<CameraController>();
     }
 
     private void SubscribeInputs() 
@@ -37,7 +40,7 @@ public class PlayerInteraction : MonoBehaviour
         }
         Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
         RaycastHit hitInfo;
-        if (Physics.Raycast(ray, out hitInfo, interactionDistance))
+        if (Physics.Raycast(ray, out hitInfo, interactionDistance, ~ignoreLayers))
         {
             Interactable interactable = hitInfo.collider.gameObject.GetComponent<Interactable>();
             if (interactable == null)
@@ -54,7 +57,7 @@ public class PlayerInteraction : MonoBehaviour
 
     public void SetInspecting(InspectableObject inspectable) 
     {
-        playerMovementController.SetInspectable(inspectable);
+        _cameraController.SetInspectableObj(inspectable);
     }
 
 
