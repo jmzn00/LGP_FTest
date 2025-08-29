@@ -5,8 +5,16 @@ public class PlayerUiManager : MonoBehaviour
 {
     [SerializeField] private TMP_Text staminaText;
 
-    public void UpdateStaminaValue(int amount) 
+    public enum UiUpdate { Stamina }
+
+    public void UpdateUI(UiUpdate toUpd, int amount) 
     {
-        staminaText.text = amount.ToString();
+        switch (toUpd) 
+        {
+            case UiUpdate.Stamina:
+                staminaText.text = amount.ToString();
+                break;
+        }
+        
     }
 }

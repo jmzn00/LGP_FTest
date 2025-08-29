@@ -59,6 +59,7 @@ public class MovementController : MonoBehaviour
     private Vector3 _velocity;
     private Vector3 _inputDir;
     private Vector3 _inputRot;
+    public Vector3 InputRot => _inputRot;
 
     private Rigidbody _rb;
 
@@ -85,7 +86,7 @@ public class MovementController : MonoBehaviour
 
         staminaAmount = maxStamina;
 
-        _playerUi.UpdateStaminaValue(staminaAmount);
+        _playerUi.UpdateUI(PlayerUiManager.UiUpdate.Stamina, staminaAmount);
     }
 
     #region Inputs
@@ -132,6 +133,33 @@ public class MovementController : MonoBehaviour
             _inputRot.x = -90f;
     }
     #endregion
+    #region Camera
+    public void SetCameraOverride(bool value)
+    {
+        overrideCamera = value;
+    }
+    private void CameraFollow()
+    {
+        if (!overrideCamera)
+        {
+            if (isThirdPersonCamera)
+            {
+                Vector3 cameraPos = transform.position - transform.forward
+                    * thirdPersonCameraDistance + Vector3.up * thirdPersonCameraHeight;
+
+                _cameraController.SetCameraPosition(cameraPos);
+                _cameraController.SetCameraLookAt(transform.position + Vector3.up * thirdPersonCameraLookAtHeight);
+            }
+            else
+            {
+                _cameraController.SetCameraPosition(transform.position + cameraOffset);
+                _cameraController.SetCameraRotation(Quaternion.Euler(_inputRot.x, _inputRot.y, 0f));
+            }
+        }
+
+    }
+    #endregion
+
 
     private void Update()
     {
@@ -211,7 +239,7 @@ public class MovementController : MonoBehaviour
         _velocity.y += dashUpAmount;
         _velocity += _inputDir * dashAmount;
         staminaAmount--;
-        _playerUi.UpdateStaminaValue(staminaAmount);
+        _playerUi.UpdateUI(PlayerUiManager.UiUpdate.Stamina, staminaAmount);
         StartCoroutine(DashCooldown());        
     }
     private IEnumerator DashCooldown() 
@@ -226,9 +254,9 @@ public class MovementController : MonoBehaviour
 
         while(staminaAmount < maxStamina) 
         {
-            staminaAmount++;
-            _playerUi.UpdateStaminaValue(staminaAmount);
             yield return new WaitForSeconds(regenSpeed);
+            staminaAmount++;
+            _playerUi.UpdateUI(PlayerUiManager.UiUpdate.Stamina, staminaAmount);
         }
         isRegenerating = false;
     }
@@ -293,32 +321,6 @@ public class MovementController : MonoBehaviour
     private void ApplyGravity()
     {
         _velocity.y -= gravity * Time.deltaTime;
-    }
-    
-    
-    public void SetCameraOverride(bool value) 
-    {
-        overrideCamera = value;
-    }
-    private void CameraFollow() 
-    {
-        if (!overrideCamera) 
-        {
-            if (isThirdPersonCamera)
-            {
-                Vector3 cameraPos = transform.position - transform.forward
-                    * thirdPersonCameraDistance + Vector3.up * thirdPersonCameraHeight;
-
-                _cameraController.SetCameraPosition(cameraPos);
-                _cameraController.SetCameraLookAt(transform.position + Vector3.up * thirdPersonCameraLookAtHeight);
-            }
-            else
-            {
-                _cameraController.SetCameraPosition(transform.position + cameraOffset);
-                _cameraController.SetCameraRotation(Quaternion.Euler(_inputRot.x, _inputRot.y, 0f));
-            }
-        }
-        
     } 
     private void OnCollisionStay(Collision collision)
     {

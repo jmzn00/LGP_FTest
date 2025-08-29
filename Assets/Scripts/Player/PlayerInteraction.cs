@@ -3,9 +3,15 @@ using UnityEngine;
 public class PlayerInteraction : MonoBehaviour
 {
     [SerializeField] private float interactionDistance = 5f;
+    [SerializeField] private Transform interactionPivot;
+    [SerializeField] LayerMask ignoreLayers;
+
+    private Interactable currentInteractable = null;
     private MovementController _playerMovementController;
     private CameraController _cameraController;
-    [SerializeField] LayerMask ignoreLayers;
+    public Transform InteractionPivot => interactionPivot;
+    bool isInspecting = false;
+    
 
     private void Start()
     {
@@ -13,7 +19,6 @@ public class PlayerInteraction : MonoBehaviour
         _playerMovementController = GetComponent<MovementController>();
         _cameraController = GetComponent<CameraController>();
     }
-
     private void SubscribeInputs() 
     {
         if(InputManager.Instance == null) 
@@ -26,9 +31,6 @@ public class PlayerInteraction : MonoBehaviour
         InputManager.Instance.Actions.Player.Interact.canceled += ctx => Interact();
         
     }
-
-    bool isInspecting = false;
-
     private void Interact() 
     {
         isInspecting = !isInspecting;
@@ -36,9 +38,10 @@ public class PlayerInteraction : MonoBehaviour
         if (!isInspecting)
         {
             SetInspecting(null);
+            currentInteractable.Interact(null);
             return;
         }
-        Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+        Ray ray = _cameraController.MainCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
         RaycastHit hitInfo;
         if (Physics.Raycast(ray, out hitInfo, interactionDistance, ~ignoreLayers))
         {
@@ -50,7 +53,8 @@ public class PlayerInteraction : MonoBehaviour
             }
             else
             {
-                interactable.Interact(this);
+                currentInteractable = interactable;
+                currentInteractable.Interact(this);
             }
         }
     }
@@ -60,5 +64,8 @@ public class PlayerInteraction : MonoBehaviour
         _cameraController.SetInspectableObj(inspectable);
     }
 
-
+    private void Update()
+    {
+        interactionPivot.transform.rotation = Quaternion.Euler(_playerMovementController.InputRot.x, transform.eulerAngles.y, 0);
+    }
 }
