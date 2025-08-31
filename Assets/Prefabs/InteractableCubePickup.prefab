@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1886632494247094657}
   - component: {fileID: 1735802307082876324}
   - component: {fileID: 462083471291389333}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: InteractableCubePickup
   m_TagString: Interactable
   m_Icon: {fileID: 0}

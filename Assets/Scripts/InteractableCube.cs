@@ -4,7 +4,7 @@ using UnityEngine;
 public class InteractableCube : Interactable
 {
     private InspectableObject inspectableObj;
-    private void Awake()
+    private void Start()
     {
         if (InteractableDatabse.Instance != null)
         {
@@ -14,6 +14,7 @@ public class InteractableCube : Interactable
         {
             Debug.LogWarning("InteractableDatabase is NULL");
         }
+        inspectableObj = GetComponent<InspectableObject>();
     }
     private void OnDestroy()
     {
@@ -25,12 +26,7 @@ public class InteractableCube : Interactable
         {
             Debug.LogWarning("InteractableDatabase is NULL");
         }
-    }
-
-    private void Start()
-    {
-        inspectableObj = GetComponent<InspectableObject>();    
-    }
+    }    
     public override void Interact(PlayerInteraction interaction)
     {
         interaction.SetInspecting(inspectableObj);

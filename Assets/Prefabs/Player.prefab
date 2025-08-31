@@ -477,6 +477,9 @@ MonoBehaviour:
   positionOffset: {x: 0, y: 1.75, z: 0}
   visionConeRange: 5
   visionConeAngle: 25
+  DetectionMask:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!114 &258279392839429948
 MonoBehaviour:
   m_ObjectHideFlags: 0

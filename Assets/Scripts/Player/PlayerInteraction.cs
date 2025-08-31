@@ -92,7 +92,7 @@ public class PlayerInteraction : MonoBehaviour
         interactionPivot.transform.rotation = Quaternion.Euler(_playerMovementController.InputRot.x, transform.eulerAngles.y, 0);
         DetectItems();
     }
-    
+    [SerializeField] private LayerMask DetectionMask;
     private void DetectItems() 
     {
         if(InteractableDatabse.Instance == null) { return; }
@@ -108,32 +108,38 @@ public class PlayerInteraction : MonoBehaviour
             var potentialTarget = interactables[i];
 
             Vector3 targetPos = potentialTarget.transform.position;
-            Vector3 vectorToTarget = targetPos - (transform.position + positionOffset);
+            Vector3 vectorToTarget = targetPos - transform.position;
             float sqrtDistance = vectorToTarget.sqrMagnitude;
 
             if(sqrtDistance > ((visionConeRange) * (visionConeRange))) 
             {
                 if (currentlyVisibleTargets.Contains(potentialTarget)) 
                 {
-                    playerUi.ToggleInteraction(false);
+                    //playerUi.ToggleInteraction(false);
                     //lost sight
                 }
                 continue;
             }
-
-            if(Vector3.Dot(vectorToTarget.normalized, transform.forward) < cosVisionAngle) 
+            
+            if (Vector3.Dot(vectorToTarget.normalized, transform.forward) < cosVisionAngle) 
             {
                 if (currentlyVisibleTargets.Contains(potentialTarget)) 
                 {
-                    playerUi.ToggleInteraction(false);
+                    //playerUi.ToggleInteraction(false);
                     //lost sight
                 }
+                playerUi.ToggleInteraction(false);
                 continue;
+                
             }
-
+            else 
+            {
+                playerUi.ToggleInteraction(true);
+            }
             
+            /*
             RaycastHit hitInfo;
-            if(Physics.Raycast(transform.position + positionOffset, vectorToTarget.normalized, out hitInfo, visionConeRange)) // detectionMask
+            if(Physics.Raycast(transform.position + positionOffset, vectorToTarget.normalized, out hitInfo, visionConeRange, DetectionMask)) // detectionMask
             {
                 Debug.DrawRay(transform.position + positionOffset, vectorToTarget.normalized * visionConeRange, Color.yellow, 0.1f);
 
@@ -168,7 +174,11 @@ public class PlayerInteraction : MonoBehaviour
                     playerUi.ToggleInteraction(false);
                 }
             }
+            */
+            
+            
         }
+        /*
         if(closestTarget != null) 
         {
            lastHitPoint = closestHitPoint;
@@ -181,5 +191,7 @@ public class PlayerInteraction : MonoBehaviour
         }
 
         currentlyVisibleTargets = visibleThisFrame;
+            */
     }
+    
 }
