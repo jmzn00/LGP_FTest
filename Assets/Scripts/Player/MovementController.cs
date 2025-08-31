@@ -201,6 +201,9 @@ public class MovementController : MonoBehaviour
         if (!isRegenerating && staminaAmount < maxStamina)
             StartCoroutine(StaminaRegen());
 
+        CameraFollow();
+        transform.rotation = Quaternion.Euler(0f, _inputRot.y, 0f);
+
         _rb.linearVelocity = _velocity;
         _isGrounded = false;
         groundNormal = Vector3.zero;
@@ -208,9 +211,9 @@ public class MovementController : MonoBehaviour
 
     private void LateUpdate()
     {
-        CameraFollow();
+        //CameraFollow();
+        //transform.rotation = Quaternion.Euler(0f, _inputRot.y, 0f);
 
-        transform.rotation = Quaternion.Euler(0f, _inputRot.y, 0f);
     }
 
     private void Crouch(bool val) 

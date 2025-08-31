@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class SlidingDoors : Activatable
 {
-    private Animator animator;
+    [SerializeField] private Animator animator;
     private void Awake()
     {
-        animator = GetComponent<Animator>();
+        //animator = GetComponent<Animator>();
     }
     public override void SetStatus(bool value, GameObject activator)
     {
