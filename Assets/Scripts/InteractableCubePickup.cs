@@ -30,14 +30,16 @@ public class InteractableCubePickup : Interactable
     public override void Interact(PlayerInteraction interaction)
     {
         if(interaction == null) 
-        {
-            rb.isKinematic = false;
+        {            
             transform.SetParent(null);
+            rb.isKinematic = false;
+            Debug.Log("Drop");
         }
         else 
         {
             rb.isKinematic = true;
             transform.SetParent(interaction.InteractionPivot);
+            Debug.Log("Pickup");
         }
         
     }

@@ -41,25 +41,37 @@ public class ItemDetection : MonoBehaviour
         if(_accum >= step) 
         {
             _accum -= step;
+           
             DetectItemsCone();
         }
     }
-    private bool isInteracting = false;
+    private bool isInspecting = false;
     private void Interact(Interactable interactable) 
     {
-        isInteracting = !isInteracting;
 
-        if (!isInteracting) 
+            if (_current.Moveable) 
         {
-            _current.Interact(null);
-            SetInspecting(null);
-            return;
+            isInspecting = !isInspecting;
+            if (isInspecting) 
+            {
+                _current.Interact(_playerInteraction);
+                return;
+            }
+            else 
+            {
+                _current.Interact(null);
+                return;
+            }
         }
-        interactable.Interact(_playerInteraction);
+        else 
+        {
+            interactable.Interact(_playerInteraction);
+        }
+        
     }
     public void SetInspecting(InspectableObject inspectable)
-    {
-        _cameraController.SetInspectableObj(inspectable);
+    {        
+     _cameraController.SetInspectableObj(inspectable);               
     }
     private void SubscribeInputs() 
     {

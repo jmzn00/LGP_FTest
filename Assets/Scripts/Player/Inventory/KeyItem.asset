@@ -15,3 +15,7 @@ MonoBehaviour:
   name: Golden Key
   description: This key unlocks a door
   sprite: {fileID: 21300000, guid: ac2f63af49e121f46836225b6ba9d4c4, type: 3}
+  inspectable: 1
+  equippable: 0
+  usable: 1
+  droppable: 0

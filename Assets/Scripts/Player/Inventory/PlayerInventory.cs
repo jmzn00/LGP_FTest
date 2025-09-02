@@ -1,11 +1,9 @@
-using NUnit.Framework;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerInventory : MonoBehaviour
 {
-    private List<InventoryItem> _inventoryItems = new();
+    private List<InventoryItem> _inventoryItems;
     public List<InventoryItem> InventoryItems => _inventoryItems;
 
     private PlayerUiManager _playerUi;
@@ -13,7 +11,6 @@ public class PlayerInventory : MonoBehaviour
     [SerializeField] private Transform inventoryHolster;
 
     [SerializeField] private int _inventorySlots = 5;
-    private int _usedSlots = 0;
     public int InventorySlots 
     {
         get => _inventorySlots;
@@ -34,8 +31,10 @@ public class PlayerInventory : MonoBehaviour
 
     private void Start()
     {
+        _inventoryItems = new List<InventoryItem>();
         SubscribeInputs();
         OnInventorySlotsChanged(_inventorySlots, _inventorySlots);
+        OnInventoryItemsChanged(_inventoryItems);
     }
 
     private void SubscribeInputs() 
@@ -57,33 +56,29 @@ public class PlayerInventory : MonoBehaviour
     {
         _playerUi.OnInventoryItemsChanged(items);
     }
-    public void AddInventoryItem(InventoryItem item) 
+    public bool TryAdd(InventoryItem item) 
     {
-        if(_usedSlots <= _inventorySlots) 
+        if(_inventoryItems.Count >= _inventorySlots) 
         {
-            _inventoryItems.Add(item);
-
-            if (item.visuals)
-                item.visuals.SetActive(false);
-
-            OnInventoryItemsChanged(_inventoryItems);
-            _usedSlots++;
+            return false;
         }
         else 
         {
-            Debug.Log("Inventory is full");
+            _inventoryItems.Add(item);
+            OnInventoryItemsChanged(_inventoryItems);
+            return true;
         }
+
     }
     public void RemoveInventoryItem(InventoryItem item) 
     {
         _inventoryItems.Remove(item);
-        item.visuals.SetActive(true);
         OnInventoryItemsChanged(_inventoryItems);
-        _usedSlots--;
     }
 
     public void CheckInventoryItems() 
     {
         _playerUi.ToggleInventory(_inventoryItems);
     }
+
 }

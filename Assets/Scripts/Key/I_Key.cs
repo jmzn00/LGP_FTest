@@ -4,10 +4,6 @@ public class I_Key : Interactable
 {
     [SerializeField] private InventoryItem _item;
 
-    private void Awake()
-    {
-        _item.visuals = gameObject;
-    }
     public override void Interact(PlayerInteraction interaction)
     {
         if(interaction != null) 
@@ -15,8 +11,13 @@ public class I_Key : Interactable
             PlayerInventory inventory = interaction.gameObject.GetComponent<PlayerInventory>();
             if(inventory != null) 
             {
-                inventory.AddInventoryItem(_item);
+                if (inventory.TryAdd(_item))
+                    gameObject.SetActive(false);
             }
         }
+    }
+    public override void Use()
+    {
+        base.Use();
     }
 }

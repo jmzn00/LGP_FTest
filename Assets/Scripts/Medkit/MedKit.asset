@@ -15,3 +15,7 @@ MonoBehaviour:
   name: Medkit
   description: This medkit will heal you
   sprite: {fileID: 21300000, guid: a1163f90f5b1f78458c6a24b14efa913, type: 3}
+  inspectable: 0
+  equippable: 0
+  usable: 1
+  droppable: 1
