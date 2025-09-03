@@ -24,6 +24,21 @@ public class InputManager : MonoBehaviour
         actions.Enable();
     }
 
+    public void TogglePlayerInputs(bool value) 
+    {
+        if(value)
+            actions.Player.Enable();
+        else
+            actions.Player.Disable();
+    }
+    public void ToggleUiInputs(bool value) 
+    {
+        if(value)
+            actions.UI.Enable();
+        else
+            actions.UI.Disable();
+    }
+
     private void OnDisable()
     {
         actions.Disable();

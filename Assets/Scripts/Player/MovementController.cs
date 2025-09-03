@@ -213,7 +213,6 @@ public class MovementController : MonoBehaviour
     {
         //CameraFollow();
         //transform.rotation = Quaternion.Euler(0f, _inputRot.y, 0f);
-
     }
 
     private void Crouch(bool val) 

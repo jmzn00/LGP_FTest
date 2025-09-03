@@ -6,7 +6,7 @@ public class PlayerInventory : MonoBehaviour
     private List<InventoryItem> _inventoryItems;
     public List<InventoryItem> InventoryItems => _inventoryItems;
 
-    private PlayerUiManager _playerUi;
+    private InventoryUI _inventoryUI;
 
     [SerializeField] private Transform inventoryHolster;
 
@@ -26,7 +26,7 @@ public class PlayerInventory : MonoBehaviour
 
     private void Awake()
     {
-        _playerUi = GetComponent<PlayerUiManager>();
+        _inventoryUI = GetComponent<InventoryUI>();
     }
 
     private void Start()
@@ -36,6 +36,7 @@ public class PlayerInventory : MonoBehaviour
         OnInventorySlotsChanged(_inventorySlots, _inventorySlots);
         OnInventoryItemsChanged(_inventoryItems);
     }
+    
 
     private void SubscribeInputs() 
     {
@@ -50,11 +51,11 @@ public class PlayerInventory : MonoBehaviour
     }
     private void OnInventorySlotsChanged(int oldValue, int newValue) 
     {
-        _playerUi.OnInventorySlotsChanged(oldValue, newValue);
+        _inventoryUI.OnInventorySlotsChanged(oldValue, newValue);
     }
     private void OnInventoryItemsChanged(List<InventoryItem> items) 
     {
-        _playerUi.OnInventoryItemsChanged(items);
+        _inventoryUI.OnInventoryItemsChanged(items);
     }
     public bool TryAdd(InventoryItem item) 
     {
@@ -70,6 +71,11 @@ public class PlayerInventory : MonoBehaviour
         }
 
     }
+    public void RemoveAt(int index) 
+    {
+        _inventoryItems.RemoveAt(index);
+        OnInventoryItemsChanged(_inventoryItems);
+    }
     public void RemoveInventoryItem(InventoryItem item) 
     {
         _inventoryItems.Remove(item);
@@ -78,7 +84,7 @@ public class PlayerInventory : MonoBehaviour
 
     public void CheckInventoryItems() 
     {
-        _playerUi.ToggleInventory(_inventoryItems);
+        _inventoryUI.ToggleInventory(_inventoryItems);
     }
 
 }

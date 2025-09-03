@@ -12,10 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96c07b40b70b75b40835af2ffeb1db10, type: 3}
   m_Name: MedKit
   m_EditorClassIdentifier: Assembly-CSharp::InventoryItem
-  name: Medkit
+  displayName: MedKit
   description: This medkit will heal you
   sprite: {fileID: 21300000, guid: a1163f90f5b1f78458c6a24b14efa913, type: 3}
-  inspectable: 0
-  equippable: 0
-  usable: 1
-  droppable: 1
+  worldPrefab: {fileID: 5650398499707876007, guid: e4608fa16589af64d8c8ba86e437c198, type: 3}
+  maxStack: 3
+  _actions: 000000000200000003000000
+  overrideInspect: {fileID: 0}
+  overrideEquip: {fileID: 0}
+  overrideUse: {fileID: 11400000, guid: 5f4d5c0bb746be645bd2ccecf523692a, type: 2}
+  overrideDrop: {fileID: 0}

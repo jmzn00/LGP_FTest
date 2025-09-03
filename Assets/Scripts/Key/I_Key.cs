@@ -12,7 +12,7 @@ public class I_Key : Interactable
             if(inventory != null) 
             {
                 if (inventory.TryAdd(_item))
-                    gameObject.SetActive(false);
+                    Destroy(gameObject); // TEMP ADD POOLING
             }
         }
     }

@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43f9adb143b60184db8d349343e0dc8e, type: 3}
+  m_Name: DefaultActions
+  m_EditorClassIdentifier: Assembly-CSharp::ActionDefaultsSO
+  defaultInspect: {fileID: 0}
+  defaultEquip: {fileID: 0}
+  defaultUse: {fileID: 11400000, guid: a49e5bafe7a3d2e4aa8cb66f7d580c78, type: 2}
+  defaultDrop: {fileID: 11400000, guid: 61e5aacf88ce6204db88cd49e3672342, type: 2}
