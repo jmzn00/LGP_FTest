@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8311894875232893682
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2101,10 +2101,10 @@ MonoBehaviour:
   slopeLimit: 60
   playerVisuals: {fileID: 5170924813908807567}
   playerCollider: {fileID: 2159559899661673667}
-  additiveJump: 1
+  additiveJump: 0
   autoJump: 0
-  jumpHeight: 8
-  gravity: 20
+  jumpHeight: 0
+  gravity: 16
   airLimit: 1
   airAcceleration: 100
   staminaAmount: 0
