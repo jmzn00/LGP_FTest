@@ -1,14 +1,17 @@
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class LockInteraction : MonoBehaviour
 {
     private InventoryUI _inventoryUi;
+    private CameraController _cameraController;
     private Interactable _currentLock;
     private int _lockId;
 
     private void Awake()
     {
         _inventoryUi = GetComponent<InventoryUI>();
+        _cameraController = GetComponent<CameraController>();
     }
     public void FocusLock(Interactable curentLock, int lockId) 
     {
@@ -24,9 +27,10 @@ public class LockInteraction : MonoBehaviour
     }
     public bool TryOpenLock(int id) 
     {
-        if(id == _lockId) 
+        if (id == _lockId) 
         {
-            _currentLock.Use();
+            _cameraController.SetCameraFocusInteractable(_currentLock);
+            _currentLock.PlayAnimation(InteractableAnimationType.Unlock);
             return true;
         }
         return false;

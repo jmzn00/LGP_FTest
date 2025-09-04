@@ -1,10 +1,12 @@
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
     private InspectableObject _inspectableObject;
     private MovementController _movementController;
-    
+    private InventoryUI _inventoryUI;
+
     [SerializeField] private float inspectOrbitDistance = 2.5f;
     [SerializeField] private float inspectOrbitHeight = 1.5f;
     [SerializeField] private float inspectOrbitSensitivity = 2f;
@@ -21,6 +23,7 @@ public class CameraController : MonoBehaviour
     {
         _camera = Camera.main;
         _movementController = GetComponent<MovementController>();
+        _inventoryUI = GetComponent<InventoryUI>();
     }
 
     private void Start()
@@ -31,6 +34,51 @@ public class CameraController : MonoBehaviour
             return;
         }
         InputManager.Instance.Actions.Player.Zoom.performed += ctx => InspectableZoom(ctx.ReadValue<float>());
+    }
+    private void Update()
+    {
+        if (isFocusing && focusTarget)
+        {
+            Vector3 target = focusTarget.transform.position + focusTarget.transform.forward;
+
+            // Smooth position
+            _camera.transform.position = Vector3.Lerp(
+                _camera.transform.position,
+                target,
+                focusSmoothTime * Time.deltaTime
+            );
+
+            // Smooth rotation to look at target
+            Vector3 direction = (focusTarget.transform.position + focusPositionOffset) - _camera.transform.position;
+            _camera.transform.rotation = Quaternion.LookRotation(direction);
+
+            if(Vector3.Distance(_camera.transform.position, target) < 0.1f) 
+            {
+                focusTarget.Used();
+                SetCameraFocusInteractable(null);
+            }
+        }        
+    }
+
+    private bool isFocusing = false;
+    private Interactable focusTarget;
+    [SerializeField] private Vector3 focusPositionOffset = new Vector3(0f, 0f, 1f);
+    [SerializeField] private float focusSmoothTime = 1f;
+    public void SetCameraFocusInteractable(Interactable interactable) 
+    {
+        if (interactable) 
+        {
+            isFocusing = true;
+            focusTarget = interactable;
+            _inventoryUI.ToggleInventory(false);
+            _movementController.SetCameraOverride(true);
+        } 
+        else 
+        {
+            isFocusing = false;
+            focusTarget = null;
+            _movementController.SetCameraOverride(false);
+        }
     }
 
     public void SetCameraPosition(Vector3 target) 
@@ -59,13 +107,7 @@ public class CameraController : MonoBehaviour
             _movementController.SetCameraOverride(true);
             inspectCamera.gameObject.SetActive(true);
             _camera.cullingMask = 0; // nothing
-        }
-            
-    }
-
-    private void Update()
-    {
-        HandleObjectInspection();
+        }            
     }
 
     private void HandleObjectInspection() 

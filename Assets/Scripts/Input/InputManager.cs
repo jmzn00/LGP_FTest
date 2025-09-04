@@ -20,16 +20,26 @@ public class InputManager : MonoBehaviour
 
         if(actions == null)
             actions = new InputSystem_Actions();
-        
-        actions.Enable();
+
+        TogglePlayerInputs(true);
+        ToggleUiInputs(true);
     }
 
     public void TogglePlayerInputs(bool value) 
     {
-        if(value)
+        if (value) 
+        {
             actions.Player.Enable();
-        else
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+        else 
+        {
             actions.Player.Disable();
+            Cursor.lockState = CursorLockMode.Confined;
+            Cursor.visible = true;
+        }
+                
     }
     public void ToggleUiInputs(bool value) 
     {

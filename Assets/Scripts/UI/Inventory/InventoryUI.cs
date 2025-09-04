@@ -38,11 +38,6 @@ public class InventoryUI : MonoBehaviour
 
         inventoryPanel.SetActive(InventoryOpen);
         InputManager.Instance?.TogglePlayerInputs(!InventoryOpen);
-        
-        if(!InventoryOpen)
-            _lockInteraction?.UnFocusLock();
-
-
     }
 
     private readonly List<InventorySlotView> slotViews = new();

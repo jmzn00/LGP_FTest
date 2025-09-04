@@ -2045,7 +2045,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4261838521075394232}
   - component: {fileID: 4453911761200494193}
-  - component: {fileID: 1050854531610041147}
+  - component: {fileID: 4336935572972065531}
   - component: {fileID: 6649513796683385989}
   - component: {fileID: 310108477561770469}
   - component: {fileID: 1186316292664408352}
@@ -2117,23 +2117,23 @@ MonoBehaviour:
   thirdPersonCameraDistance: 3.5
   thirdPersonCameraHeight: 2.5
   thirdPersonCameraLookAtHeight: 2
---- !u!114 &1050854531610041147
+--- !u!114 &4336935572972065531
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5854065368263699373}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 99d12923b551ddb4f838a15a7e4d4d83, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: '::'
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInteraction
   interactionDistance: 5
   interactionPivot: {fileID: 262715864423372043}
   ignoreLayers:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 0
 --- !u!114 &6649513796683385989
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2249,6 +2249,8 @@ MonoBehaviour:
   inspectOrbitHeight: 0
   inspectOrbitSensitivity: 1
   inspectCamera: {fileID: 0}
+  focusPositionOffset: {x: 0, y: 0, z: 1}
+  focusSmoothTime: 1
 --- !u!54 &3513033044825120759
 Rigidbody:
   m_ObjectHideFlags: 0

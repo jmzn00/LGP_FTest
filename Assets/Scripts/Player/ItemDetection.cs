@@ -165,7 +165,6 @@ public class ItemDetection : MonoBehaviour
         {
             _current = best;
             _playerUiManager.ToggleInteraction(_current != null);
-            Debug.Log("Toggle Interaction");
         }
     }
 
