@@ -5,7 +5,7 @@ public class SlidingDoors : Activatable
     [SerializeField] private Animator animator;
     private void Awake()
     {
-        //animator = GetComponent<Animator>();
+        Deactivate();
     }
     public override void SetStatus(bool value, GameObject activator)
     {

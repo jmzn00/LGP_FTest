@@ -82,9 +82,11 @@ public class PlayerInventory : MonoBehaviour
         OnInventoryItemsChanged(_inventoryItems);
     }
 
+    bool inventoryToggle = false;
     public void CheckInventoryItems() 
     {
-        _inventoryUI.ToggleInventory(_inventoryItems);
+        inventoryToggle = !inventoryToggle;
+        _inventoryUI.ToggleInventory(inventoryToggle);
     }
 
 }

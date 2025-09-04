@@ -12,14 +12,37 @@ public class InventoryUI : MonoBehaviour
 
     private List<InventoryItem> _inventoryItems = new();
 
-    bool inventoryToggle = false;
+    private LockInteraction _lockInteraction;
+
     public bool InventoryOpen { get; private set; } = false;
-    public void ToggleInventory(List<InventoryItem> items)
+
+    private void Awake()
     {
-        InventoryOpen = !InventoryOpen;
+        _buttonMap = new Dictionary<ItemAction, UnityEngine.UI.Button>()
+        {
+            { ItemAction.Use, useButton },
+            { ItemAction.Inspect, inspectButton },
+            { ItemAction.Equip, equipButton },
+            { ItemAction.Drop, dropButton }
+        };
+        HideAllButtons();
+        if (_itemMenu) _itemMenu.gameObject.SetActive(false);
+
+        _playerInventory = GetComponent<PlayerInventory>();
+        _actionExecutor = GetComponent<ItemActionExecutor>();
+        _lockInteraction = GetComponent<LockInteraction>();
+    }
+    public void ToggleInventory(bool value)
+    {
+        InventoryOpen = value;
 
         inventoryPanel.SetActive(InventoryOpen);
         InputManager.Instance?.TogglePlayerInputs(!InventoryOpen);
+        
+        if(!InventoryOpen)
+            _lockInteraction?.UnFocusLock();
+
+
     }
 
     private readonly List<InventorySlotView> slotViews = new();
@@ -86,21 +109,7 @@ public class InventoryUI : MonoBehaviour
 
     private PlayerInventory _playerInventory;
     private ItemActionExecutor _actionExecutor;
-    private void Awake()
-    {
-        _buttonMap = new Dictionary<ItemAction, UnityEngine.UI.Button>()
-        {
-            { ItemAction.Use, useButton },
-            { ItemAction.Inspect, inspectButton },
-            { ItemAction.Equip, equipButton },
-            { ItemAction.Drop, dropButton }
-        };
-        HideAllButtons();
-        if(_itemMenu) _itemMenu.gameObject.SetActive(false);
 
-        _playerInventory = GetComponent<PlayerInventory>();
-        _actionExecutor = GetComponent<ItemActionExecutor>();
-    }
     private void HideAllButtons() 
     {
         foreach (var b in _buttonMap.Values) 

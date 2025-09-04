@@ -1,3 +1,4 @@
+using System.Data.Common;
 using TMPro;
 using UnityEngine;
 
@@ -137,7 +138,7 @@ public class ItemDetection : MonoBehaviour
 
                 Interactable hitInteractable = hit.collider.GetComponent<Interactable>();
                 if (interactable != null)
-                {
+                {                    
                     visible = (hitInteractable == interactable);
                     break;
                 }
@@ -164,6 +165,7 @@ public class ItemDetection : MonoBehaviour
         {
             _current = best;
             _playerUiManager.ToggleInteraction(_current != null);
+            Debug.Log("Toggle Interaction");
         }
     }
 

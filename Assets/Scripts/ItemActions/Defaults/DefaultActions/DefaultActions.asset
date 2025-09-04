@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43f9adb143b60184db8d349343e0dc8e, type: 3}
   m_Name: DefaultActions
   m_EditorClassIdentifier: Assembly-CSharp::ActionDefaultsSO
-  defaultInspect: {fileID: 0}
+  defaultInspect: {fileID: 11400000, guid: 6c64f8075fdb8f2459e2a3838b5a2843, type: 2}
   defaultEquip: {fileID: 0}
   defaultUse: {fileID: 11400000, guid: a49e5bafe7a3d2e4aa8cb66f7d580c78, type: 2}
   defaultDrop: {fileID: 11400000, guid: 61e5aacf88ce6204db88cd49e3672342, type: 2}

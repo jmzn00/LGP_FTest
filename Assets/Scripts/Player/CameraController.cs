@@ -1,6 +1,4 @@
-using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.Animations;
 
 public class CameraController : MonoBehaviour
 {
