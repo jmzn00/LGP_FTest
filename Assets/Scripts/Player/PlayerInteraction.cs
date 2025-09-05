@@ -2,11 +2,9 @@ using UnityEngine;
 
 public class PlayerInteraction : MonoBehaviour
 {
-    [SerializeField] private float interactionDistance = 5f;
     [SerializeField] private Transform interactionPivot;
     [SerializeField] LayerMask ignoreLayers;
 
-    private Interactable currentInteractable = null;
     private MovementController _playerMovementController;
     private CameraController _cameraController;
     public Transform InteractionPivot => interactionPivot;

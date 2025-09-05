@@ -6,6 +6,8 @@ public class CameraController : MonoBehaviour
     private InspectableObject _inspectableObject;
     private MovementController _movementController;
     private InventoryUI _inventoryUI;
+    private PlayerUiManager _playerUi;
+    private LockInteraction _lockInteraction;
 
     [SerializeField] private float inspectOrbitDistance = 2.5f;
     [SerializeField] private float inspectOrbitHeight = 1.5f;
@@ -18,12 +20,18 @@ public class CameraController : MonoBehaviour
 
     private float inspectOribitAngle = 0f;
 
+    private bool isFocusing = false;
+    private Interactable focusTarget;
+    [SerializeField] private float focusSmoothTime = 1f;
+
 
     private void Awake()
     {
         _camera = Camera.main;
         _movementController = GetComponent<MovementController>();
         _inventoryUI = GetComponent<InventoryUI>();
+        _lockInteraction = GetComponent<LockInteraction>();
+        _playerUi = GetComponent<PlayerUiManager>();
     }
 
     private void Start()
@@ -37,50 +45,45 @@ public class CameraController : MonoBehaviour
     }
     private void Update()
     {
-        if (isFocusing && focusTarget)
-        {
-            Vector3 target = focusTarget.transform.position + focusTarget.transform.forward;
-
-            // Smooth position
-            _camera.transform.position = Vector3.Lerp(
-                _camera.transform.position,
-                target,
-                focusSmoothTime * Time.deltaTime
-            );
-
-            // Smooth rotation to look at target
-            Vector3 direction = (focusTarget.transform.position + focusPositionOffset) - _camera.transform.position;
-            _camera.transform.rotation = Quaternion.LookRotation(direction);
-
-            if(Vector3.Distance(_camera.transform.position, target) < 0.1f) 
-            {
-                focusTarget.Used();
-                SetCameraFocusInteractable(null);
-            }
-        }        
+        HandleObjectFocus();
     }
-
-    private bool isFocusing = false;
-    private Interactable focusTarget;
-    [SerializeField] private Vector3 focusPositionOffset = new Vector3(0f, 0f, 1f);
-    [SerializeField] private float focusSmoothTime = 1f;
-    public void SetCameraFocusInteractable(Interactable interactable) 
+    public void SetCameraFocusInteractable(Interactable interactable)
     {
-        if (interactable) 
+        if (interactable)
         {
             isFocusing = true;
             focusTarget = interactable;
             _inventoryUI.ToggleInventory(false);
+            _inventoryUI.ToggleInteraction(false);
             _movementController.SetCameraOverride(true);
-        } 
-        else 
+        }
+        else
         {
             isFocusing = false;
             focusTarget = null;
             _movementController.SetCameraOverride(false);
         }
     }
+    private void HandleObjectFocus() 
+    {
+        if (isFocusing && focusTarget)
+        {
+            Vector3 target = focusTarget.transform.position + focusTarget.transform.forward;
 
+            _camera.transform.position = Vector3.Lerp(
+                _camera.transform.position,
+                target,
+                focusSmoothTime * Time.deltaTime
+            );
+            _camera.transform.LookAt(focusTarget.transform.position);
+
+            if (Vector3.Distance(_camera.transform.position, target) < 0.1f)
+            {
+                _lockInteraction?.OnAnimationFinished(focusTarget);
+                SetCameraFocusInteractable(null);
+            }
+        }
+    }
     public void SetCameraPosition(Vector3 target) 
     {
         _camera.transform.position = target;

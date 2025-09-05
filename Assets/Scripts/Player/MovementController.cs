@@ -86,7 +86,7 @@ public class MovementController : MonoBehaviour
 
         staminaAmount = maxStamina;
 
-        _playerUi.UpdateUI(PlayerUiManager.UiUpdate.Stamina, staminaAmount);
+        //_playerUi.UpdateUI(PlayerUiManager.UiUpdate.Stamina, staminaAmount);
     }
 
     #region Inputs
@@ -109,7 +109,7 @@ public class MovementController : MonoBehaviour
         InputManager.Instance.Actions.Player.ToggleThirdPerson.performed += ctx => isThirdPersonCamera = !isThirdPersonCamera;
         //InputManager.Instance.Actions.Player.ToggleThirdPerson.canceled += ctx => isThirdPersonCamera = false;
 
-        InputManager.Instance.Actions.Player.Sprint.performed += ctx => dashPending = true;
+        //InputManager.Instance.Actions.Player.Sprint.performed += ctx => dashPending = true;
 
         InputManager.Instance.Actions.Player.Crouch.performed += ctx => Crouch(true);
         InputManager.Instance.Actions.Player.Crouch.canceled += ctx => Crouch(false);
@@ -192,15 +192,16 @@ public class MovementController : MonoBehaviour
             AirAccelerate();
             ApplyGravity();
         }
-
+        /*
         if (dashPending) 
         {
             Dash();            
         }
+        
 
         if (!isRegenerating && staminaAmount < maxStamina)
             StartCoroutine(StaminaRegen());
-
+        */
         CameraFollow();
         transform.rotation = Quaternion.Euler(0f, _inputRot.y, 0f);
 
@@ -241,7 +242,6 @@ public class MovementController : MonoBehaviour
         _velocity.y += dashUpAmount;
         _velocity += _inputDir * dashAmount;
         staminaAmount--;
-        _playerUi.UpdateUI(PlayerUiManager.UiUpdate.Stamina, staminaAmount);
         StartCoroutine(DashCooldown());        
     }
     private IEnumerator DashCooldown() 
@@ -258,7 +258,6 @@ public class MovementController : MonoBehaviour
         {
             yield return new WaitForSeconds(regenSpeed);
             staminaAmount++;
-            _playerUi.UpdateUI(PlayerUiManager.UiUpdate.Stamina, staminaAmount);
         }
         isRegenerating = false;
     }

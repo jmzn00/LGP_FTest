@@ -2,19 +2,57 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class InventoryUI : MonoBehaviour
 {
+    private PlayerUiManager _playerUiManager;
+
     [Header("Inventory")]
     [SerializeField] private GameObject inventoryPanel;
     [SerializeField] private GameObject inventorySlotPrefab;
     [SerializeField] private Transform inventorySlotTransform;
 
+    private PlayerInventory _playerInventory;
+    private ItemActionExecutor _actionExecutor;
     private List<InventoryItem> _inventoryItems = new();
-
-    private LockInteraction _lockInteraction;
-
+    private readonly List<InventorySlotView> slotViews = new();
     public bool InventoryOpen { get; private set; } = false;
+
+    [Header("ItemMenu")]
+    [SerializeField] private ItemMenu _itemMenu;
+    [SerializeField] private UnityEngine.UI.Button useButton;
+    [SerializeField] private UnityEngine.UI.Button inspectButton;
+    [SerializeField] private UnityEngine.UI.Button equipButton;
+    [SerializeField] private UnityEngine.UI.Button dropButton;
+
+    private Dictionary<ItemAction, UnityEngine.UI.Button> _buttonMap;
+
+    [Header("Interaction")]
+    [SerializeField] private RawImage grabImage;
+
+    public void ToggleInteraction(bool value)
+    {
+        if (value)
+        {
+            if (!grabImage.gameObject.activeInHierarchy)
+            {
+                grabImage.gameObject.SetActive(true);
+                _playerUiManager?.ShowTooltip("Press 'E' to interact", true);
+            }
+
+        }
+        else
+        {
+            if (grabImage.gameObject.activeInHierarchy)
+            {
+                grabImage.gameObject.SetActive(false);
+                _itemMenu.gameObject.SetActive(false);
+                _playerUiManager?.ShowTooltip("", false);
+            }
+
+        }
+    }
 
     private void Awake()
     {
@@ -30,7 +68,7 @@ public class InventoryUI : MonoBehaviour
 
         _playerInventory = GetComponent<PlayerInventory>();
         _actionExecutor = GetComponent<ItemActionExecutor>();
-        _lockInteraction = GetComponent<LockInteraction>();
+        _playerUiManager = GetComponent<PlayerUiManager>();
     }
     public void ToggleInventory(bool value)
     {
@@ -40,7 +78,7 @@ public class InventoryUI : MonoBehaviour
         InputManager.Instance?.TogglePlayerInputs(!InventoryOpen);
     }
 
-    private readonly List<InventorySlotView> slotViews = new();
+    
     public void OnInventorySlotsChanged(int oldValue, int newValue)
     {
         // Destroy old
@@ -92,19 +130,6 @@ public class InventoryUI : MonoBehaviour
         }
 
     }
-
-    [Header("ItemMenu")]
-    [SerializeField] private ItemMenu _itemMenu;
-    [SerializeField] private UnityEngine.UI.Button useButton;
-    [SerializeField] private UnityEngine.UI.Button inspectButton;
-    [SerializeField] private UnityEngine.UI.Button equipButton;
-    [SerializeField] private UnityEngine.UI.Button dropButton;
-
-    private Dictionary<ItemAction, UnityEngine.UI.Button> _buttonMap;
-
-    private PlayerInventory _playerInventory;
-    private ItemActionExecutor _actionExecutor;
-
     private void HideAllButtons() 
     {
         foreach (var b in _buttonMap.Values) 
@@ -160,11 +185,8 @@ public class InventoryUI : MonoBehaviour
             slotViews[i].Bind(item);
         }
     }
-
     private void OnSlotHover(int index, InventoryItem item, bool isOver)
     {
-        // Optional: show/hide tooltip
-        // if (isOver && item) tooltip.Show(item.displayName, item.description);
-        // else tooltip.Hide();
+        _playerUiManager.ShowTooltip("Click on a item to view it's uses", isOver);
     }
 }

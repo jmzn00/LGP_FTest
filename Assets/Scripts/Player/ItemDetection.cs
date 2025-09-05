@@ -24,11 +24,14 @@ public class ItemDetection : MonoBehaviour
     [SerializeField] private float detectionHz = 10f;
     private float _accum;
 
+    private InventoryUI _inventoryUI;
+
     private void Start()
     {
         _cameraController = GetComponent<CameraController>();
         _playerUiManager = GetComponent<PlayerUiManager>();
         _playerInteraction = GetComponent<PlayerInteraction>();
+        _inventoryUI = GetComponent<InventoryUI>();
 
 
 
@@ -109,6 +112,12 @@ public class ItemDetection : MonoBehaviour
         Interactable best = null;
         float bestScore = -1f;
 
+        // mainly for if _current was just picked up the loop best check wont fire
+        if (!_current) 
+        {
+            _inventoryUI.ToggleInteraction(false);
+        }
+
         for (int i = 0; i < count; i++) 
         {
             Collider col = _overlap[i];
@@ -164,7 +173,7 @@ public class ItemDetection : MonoBehaviour
         if(best != _current) 
         {
             _current = best;
-            _playerUiManager.ToggleInteraction(_current != null);
+            _inventoryUI.ToggleInteraction(_current != null);
         }
     }
 

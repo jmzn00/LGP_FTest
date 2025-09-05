@@ -13,11 +13,11 @@ public class LockInteraction : MonoBehaviour
         _inventoryUi = GetComponent<InventoryUI>();
         _cameraController = GetComponent<CameraController>();
     }
-    public void FocusLock(Interactable curentLock, int lockId) 
+    public void FocusLock(Interactable currentLock, int lockId) 
     {
         _inventoryUi?.ToggleInventory(true);
 
-        _currentLock = curentLock;
+        _currentLock = currentLock;
         _lockId = lockId;
     }
     public void UnFocusLock() 
@@ -31,8 +31,22 @@ public class LockInteraction : MonoBehaviour
         {
             _cameraController.SetCameraFocusInteractable(_currentLock);
             _currentLock.PlayAnimation(InteractableAnimationType.Unlock);
+            Debug.Log($"Lock {_lockId} Unlocked with key {id}");
             return true;
         }
+        Debug.Log($"Wrong Key {id} for {_lockId}");
         return false;
     }   
+    public void OnAnimationFinished(Interactable item) 
+    {
+        if (item) 
+        {
+            item.Used();
+        }
+        else 
+        {
+            Debug.LogError($"item is NULL cannot call Used();", this);
+            return;
+        }
+    }
 }
