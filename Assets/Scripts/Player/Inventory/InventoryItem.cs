@@ -9,6 +9,7 @@ public class InventoryItem : ScriptableObject
     [Header("Presentation")]
     public string displayName;
     public string description;
+    public bool displayDescriptionInUI = true;
     public Sprite sprite;
 
     [Header("World")]

@@ -27,8 +27,11 @@ public class InspectUI : MonoBehaviour
 
         Vector3 directionToCamera = _inspectCamera.transform.position - _currentInspectable.transform.position;
         _currentInspectable.transform.rotation = Quaternion.LookRotation(directionToCamera, Vector3.up);
+        if(item.displayDescriptionInUI)
+            _descriptionText.text = item.description;
+        else
+            _descriptionText.text = "";
 
-        _descriptionText.text = item.description;
         _inspectPanel.SetActive(true);        
     }
     public void Close() 
