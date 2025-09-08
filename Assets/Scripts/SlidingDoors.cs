@@ -14,12 +14,15 @@ public class SlidingDoors : Activatable
     }
     public override void Activate()
     {
-        animator.Play("Door_Open", 0, 0);
-        if (activateOnActivate)
-            activateOnActivate.Activate();
+        
     }
     public override void Deactivate()
     {
-        animator.Play("Door_Close", 0, 0);
+        
+    }
+    
+    private void Update()
+    {
+        
     }
 }

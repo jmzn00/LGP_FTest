@@ -3,6 +3,7 @@ using Unity.Collections.LowLevel.Unsafe;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Assertions.Must;
+using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -68,7 +69,7 @@ public class MovementController : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
         _cameraController = GetComponent<CameraController>();
     }
-
+    InputAction _lookAction;
     #region Inputs
     private void SubscribeInputs()
     {
@@ -82,6 +83,8 @@ public class MovementController : MonoBehaviour
 
         InputManager.Instance.Actions.Player.Look.performed += ctx => _lookInput = ctx.ReadValue<Vector2>();
         InputManager.Instance.Actions.Player.Look.canceled += ctx => _lookInput = Vector3.zero;
+
+        _lookAction = InputManager.Instance.Actions.Player.Look;
 
         InputManager.Instance.Actions.Player.Jump.performed += ctx => jumpPending = true;
         InputManager.Instance.Actions.Player.Jump.canceled += ctx => jumpPending = false;
@@ -133,18 +136,38 @@ public class MovementController : MonoBehaviour
             else
             {
                 _cameraController.SetCameraPosition(transform.position + cameraOffset);
-                _cameraController.SetCameraRotation(Quaternion.Euler(_inputRot.x, _inputRot.y, 0f));
+                _cameraController.SetCameraRotation(Quaternion.Euler(_pitch, _yaw, 0f));
             }
         }
 
     }
     #endregion
-
+    private float _yaw;
+    private float _pitch;
 
     private void Update()
     {
         GetMovementInput();
-        GetMouseInput();
+        //GetMouseInput();
+        GetLookInput();
+
+    }
+    [SerializeField] private float StickDegPerSec = 240f;
+    private void GetLookInput() 
+    {
+        Vector2 look = _lookAction.ReadValue<Vector2>();
+        bool isMouse = _lookAction.activeControl?.device is Mouse;
+
+        if (isMouse) 
+        {
+            _yaw += look.x * mouseSensitivity;
+            _pitch = Mathf.Clamp(_pitch - look.y * mouseSensitivity, -90f, 90f);
+        }
+        else 
+        {
+            _yaw += look.x * StickDegPerSec * Time.deltaTime;
+            _pitch = Mathf.Clamp(_pitch - look.y * StickDegPerSec * Time.deltaTime, -90f, 90f);
+        }
     }
 
     private void FixedUpdate()
@@ -173,7 +196,7 @@ public class MovementController : MonoBehaviour
             ApplyGravity();
         }
         CameraFollow();
-        transform.rotation = Quaternion.Euler(0f, _inputRot.y, 0f);
+        _rb.MoveRotation(Quaternion.Euler(0, _yaw, 0));
 
         _rb.linearVelocity = _velocity;
         _isGrounded = false;

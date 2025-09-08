@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -139,7 +140,7 @@ public class InventoryUI : MonoBehaviour
         int count = activeButtons.Length;
         if (count == 0) return;
 
-        _menuSelectedIndex += dy;
+        _menuSelectedIndex -= dy;
 
         if(_menuSelectedIndex >= count)
             _menuSelectedIndex = 0;
@@ -155,10 +156,6 @@ public class InventoryUI : MonoBehaviour
         prevButton = activeButtons[_menuSelectedIndex];
         Image img = prevButton.GetComponent<Image>();
         if (img) img.color = buttonSelectedColor;
-
-
-
-
     }
     private void TryMoveInventory(int dx, int dy)
     {
@@ -334,6 +331,7 @@ public class InventoryUI : MonoBehaviour
             if (prevButton) // ??? for resetting the selected color for controller navigation ???
             {
                 prevButton.gameObject.GetComponent<Image>().color = Color.white;
+                _menuSelectedIndex = 0;
                 prevButton = null;
             }
             
