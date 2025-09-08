@@ -12,12 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96c07b40b70b75b40835af2ffeb1db10, type: 3}
   m_Name: Note(1)
   m_EditorClassIdentifier: Assembly-CSharp::InventoryItem
-  displayName: David's note
-  description: George, If im not here by the time you wake up I left the key to your
-    room behind the chair at the end of the hallway. If im not back by 8PM something
-    has gone wrong and I need you to come find me.
+  displayName: Note
+  description: This is a note that explains some stupid bulshit.
   displayDescriptionInUI: 0
   sprite: {fileID: 21300000, guid: 88f63152a4796c0468723f954971c59b, type: 3}
+  inspectPrefab: {fileID: 0}
   worldPrefab: {fileID: 6605141644359910987, guid: d7257271f4abd124bae923e693479535, type: 3}
   maxStack: 1
   _actions: 0000000003000000

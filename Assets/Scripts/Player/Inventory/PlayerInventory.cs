@@ -10,6 +10,7 @@ public class PlayerInventory : MonoBehaviour
 
     [SerializeField] private Transform inventoryHolster;
 
+    [SerializeField] private int _maxInventorySlots = 20;
     [SerializeField] private int _inventorySlots = 5;
     public int InventorySlots 
     {
@@ -45,9 +46,17 @@ public class PlayerInventory : MonoBehaviour
             Debug.LogError("InputManager Instance is NULL");
             return;
         }
-        InputManager.Instance.Actions.UI.OpenInventory.performed += ctx => CheckInventoryItems();
+        //InputManager.Instance.Actions.UI.OpenInventory.performed += ctx => CheckInventoryItems();
+        //InputManager.Instance.Actions.UI.Navigate.performed += ctx => NavigateInventory(ctx.ReadValue<Vector2>());
         //InputManager.Instance.Actions.UI.OpenInventory.canceled += ctx => CheckInventoryItems();
 
+    }
+    public void AddInventorySlots(int amt) 
+    {
+        int oldValue = _inventorySlots;
+        _inventorySlots += amt;
+        _inventorySlots = Mathf.Clamp(_inventorySlots, 0, _maxInventorySlots);
+        OnInventorySlotsChanged(oldValue, _inventorySlots);
     }
     private void OnInventorySlotsChanged(int oldValue, int newValue) 
     {
@@ -55,7 +64,7 @@ public class PlayerInventory : MonoBehaviour
     }
     private void OnInventoryItemsChanged(List<InventoryItem> items) 
     {
-        _inventoryUI.OnInventoryItemsChanged(items);
+        _inventoryUI.OnInventoryItemsChanged(items);        
     }
     public bool TryAdd(InventoryItem item) 
     {
@@ -67,6 +76,7 @@ public class PlayerInventory : MonoBehaviour
         {
             _inventoryItems.Add(item);
             OnInventoryItemsChanged(_inventoryItems);
+            _inventoryUI.OnInventoryItemAdded();
             return true;
         }
 
@@ -88,5 +98,4 @@ public class PlayerInventory : MonoBehaviour
         inventoryToggle = !inventoryToggle;
         _inventoryUI.ToggleInventory(inventoryToggle);
     }
-
 }

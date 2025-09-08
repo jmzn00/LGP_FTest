@@ -11,6 +11,7 @@ public class PlayerUiManager : MonoBehaviour
     [SerializeField] private float toolTipDuration = 5f;
     public void ShowTooltip(string message, bool value) 
     {
+        /*
         if (!value) 
         {
             toolTipImage.gameObject.SetActive(false);
@@ -19,6 +20,7 @@ public class PlayerUiManager : MonoBehaviour
 
         toolTipImage.gameObject.SetActive(true);
         toolTipText.text = message;
+        */
     }
     #endregion
 }

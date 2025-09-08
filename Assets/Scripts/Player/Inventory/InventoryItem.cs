@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum ItemAction { Inspect, Equip, Use, Drop}
+public enum ItemAction { Inspect, Equip, Use, Drop,}
 
 [CreateAssetMenu(menuName = "Inventory/Inventory Item", fileName = "NewInventoryItem")]
 public class InventoryItem : ScriptableObject
@@ -11,6 +11,7 @@ public class InventoryItem : ScriptableObject
     public string description;
     public bool displayDescriptionInUI = true;
     public Sprite sprite;
+    public GameObject inspectPrefab;
 
     [Header("World")]
     public GameObject worldPrefab;

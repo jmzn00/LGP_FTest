@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Note(2)
   m_EditorClassIdentifier: Assembly-CSharp::InventoryItem
   displayName: Note Left By David
-  description: I left the green key behind your bed just in case... If you need to
-    leave make sure to take my gun with you, you'll find it at the end of the hallway
-    behind the locked door.
+  description: This is another note that explains some very useful information. Jaakko
+    is the best!
   displayDescriptionInUI: 0
   sprite: {fileID: 21300000, guid: 88f63152a4796c0468723f954971c59b, type: 3}
+  inspectPrefab: {fileID: 0}
   worldPrefab: {fileID: 238797898168254534, guid: 67e2352decb7d5b4283949d849f30b7e, type: 3}
   maxStack: 1
   _actions: 0000000003000000

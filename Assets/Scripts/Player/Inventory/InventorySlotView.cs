@@ -1,4 +1,5 @@
 using System;
+using System.Data.Common;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -72,7 +73,11 @@ public class InventorySlotView : MonoBehaviour,
 
     public void SetSelected(bool selected)
     {
-        if (selectionHighlight) selectionHighlight.enabled = selected;
+        if (selectionHighlight) 
+        {
+            if (selected) selectionHighlight.color = Color.red;
+            else selectionHighlight.color = Color.black;
+        }
     }
 
     // --- Events ---
@@ -86,12 +91,14 @@ public class InventorySlotView : MonoBehaviour,
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        _onHoverChanged?.Invoke(Index, CurrentItem, true);
+        _onHoverChanged?.Invoke(Index, CurrentItem, true);     
+        if(selectionHighlight) selectionHighlight.color = Color.red;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         _onHoverChanged?.Invoke(Index, CurrentItem, false);
+        if (selectionHighlight) selectionHighlight.color = Color.black;
     }
 
     private void OnDisable()

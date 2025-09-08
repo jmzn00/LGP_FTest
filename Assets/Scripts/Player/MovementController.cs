@@ -33,15 +33,6 @@ public class MovementController : MonoBehaviour
     [Header("AirMovement")]
     [SerializeField] private float airLimit = 1f;
     [SerializeField] private float airAcceleration = 100f;
-    [Space]
-    [Header("Stamina / Dash")]
-    [SerializeField] private int staminaAmount;
-    [SerializeField] private int maxStamina;
-    [SerializeField] private float dashAmount = 2f;
-    [SerializeField] private float dashCooldown = 0.5f;
-    [SerializeField] private float regenSpeed = 1f;
-    [SerializeField] private float dashUpAmount = 2f;   
-
     [Header("Camera")]
     [SerializeField] private Vector3 cameraOffset = new Vector3(0, 1.75f, 0);
     [Space]
@@ -66,14 +57,8 @@ public class MovementController : MonoBehaviour
     private Vector3 groundNormal;
     private bool _isGrounded;
 
-    private bool dashPending = false;
-    private bool canDash = true;
-    private bool isRegenerating = false;
-
     private MovingPlatform _currentPlatform;
     private Vector3 _lastPlatformPosition;
-
-    private PlayerUiManager _playerUi;
     
 
     private void Start()
@@ -81,12 +66,7 @@ public class MovementController : MonoBehaviour
         SubscribeInputs();
 
         _rb = GetComponent<Rigidbody>();
-        _playerUi = GetComponent<PlayerUiManager>();
         _cameraController = GetComponent<CameraController>();
-
-        staminaAmount = maxStamina;
-
-        //_playerUi.UpdateUI(PlayerUiManager.UiUpdate.Stamina, staminaAmount);
     }
 
     #region Inputs
@@ -192,28 +172,12 @@ public class MovementController : MonoBehaviour
             AirAccelerate();
             ApplyGravity();
         }
-        /*
-        if (dashPending) 
-        {
-            Dash();            
-        }
-        
-
-        if (!isRegenerating && staminaAmount < maxStamina)
-            StartCoroutine(StaminaRegen());
-        */
         CameraFollow();
         transform.rotation = Quaternion.Euler(0f, _inputRot.y, 0f);
 
         _rb.linearVelocity = _velocity;
         _isGrounded = false;
         groundNormal = Vector3.zero;
-    }
-
-    private void LateUpdate()
-    {
-        //CameraFollow();
-        //transform.rotation = Quaternion.Euler(0f, _inputRot.y, 0f);
     }
 
     private void Crouch(bool val) 
@@ -226,40 +190,6 @@ public class MovementController : MonoBehaviour
         {
             playerVisuals.transform.localScale = new Vector3(1f, 1f, 1f);
         }
-    }
-
-
-    private void Dash() 
-    {
-        dashPending = false;
-
-        if (staminaAmount <= 0 || !canDash) 
-        {
-            staminaAmount = 0;
-            return;
-        }
-
-        _velocity.y += dashUpAmount;
-        _velocity += _inputDir * dashAmount;
-        staminaAmount--;
-        StartCoroutine(DashCooldown());        
-    }
-    private IEnumerator DashCooldown() 
-    {
-        canDash = false; 
-        yield return new WaitForSeconds(dashCooldown);
-        canDash = true;
-    }
-    private IEnumerator StaminaRegen() 
-    {
-        isRegenerating = true;
-
-        while(staminaAmount < maxStamina) 
-        {
-            yield return new WaitForSeconds(regenSpeed);
-            staminaAmount++;
-        }
-        isRegenerating = false;
     }
     private void Jump() 
     {

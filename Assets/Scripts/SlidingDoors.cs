@@ -3,6 +3,7 @@ using UnityEngine;
 public class SlidingDoors : Activatable
 {
     [SerializeField] private Animator animator;
+    [SerializeField] private Activatable activateOnActivate;
     private void Awake()
     {
         Deactivate();
@@ -14,6 +15,8 @@ public class SlidingDoors : Activatable
     public override void Activate()
     {
         animator.Play("Door_Open", 0, 0);
+        if (activateOnActivate)
+            activateOnActivate.Activate();
     }
     public override void Deactivate()
     {
