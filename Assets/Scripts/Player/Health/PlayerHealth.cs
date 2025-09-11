@@ -1,19 +1,30 @@
 using UnityEngine;
 
-public class PlayerHealth : MonoBehaviour
+public class PlayerHealth : MonoBehaviour, IDamageable
 {
     [SerializeField] private int maxHealth = 100;
     private int _currentHealth;
 
+    public HitResult ApplyHit(in HitInfo hitInfo)
+    {
+        Debug.Log($"{hitInfo.baseDamage} damage from {hitInfo.instigator.name}");
+        TakeDamage((int)hitInfo.baseDamage);
+        return new HitResult {
+            outcome = HitOutcome.Normal            
+        };
+    }
+
     private void Start()
     {
         _currentHealth = maxHealth;
+
+         
     }
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.K))
         {
-            TakeDamage(10);
+            ApplyHit(new HitInfo { baseDamage = 10, instigator = this.gameObject });
         }
     }
     public bool CanHeal(int amount) 
@@ -51,4 +62,5 @@ public class PlayerHealth : MonoBehaviour
         Debug.Log("Player has died.");
     }
 
+    
 }
