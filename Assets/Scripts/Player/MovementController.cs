@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Assertions.Must;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
+using static UnityEditor.PlayerSettings;
 
 [RequireComponent(typeof(Rigidbody))]
 public class MovementController : MonoBehaviour
@@ -202,7 +203,19 @@ public class MovementController : MonoBehaviour
         _isGrounded = false;
         groundNormal = Vector3.zero;
     }
+    public void Teleport(Vector3 pos) 
+    {
+        StopAllCoroutines();
+        StartCoroutine(iTeleport(pos));
+    }
+    private IEnumerator iTeleport(Vector3 pos) 
+    {
+        yield return new WaitForFixedUpdate();
+        _rb.linearVelocity = Vector3.zero;
+        _velocity = Vector3.zero;
+        transform.position = pos;
 
+    }
     private void Crouch(bool val) 
     {
         if (val) 

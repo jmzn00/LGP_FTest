@@ -79,16 +79,15 @@ public class DebugConsole : MonoBehaviour
         if (cmd.StartsWith("P_")) 
         {
             HandlePlayerCommand(cmd, args);
-        }
-        else 
-        {
-            LogMessage("Pcmd Invalid");
-        }
-
+        }        
     }
     [Header("PlayerCommandReferences")]
     [SerializeField] private PlayerHealth playerHealth;
     [SerializeField] private ArmorLoadout playerArmor;
+    [SerializeField] private MovementController playerMovement;
+
+    [Header("Database")]
+    [SerializeField] private ArmorDatabase armorDatabase;
     private void HandlePlayerCommand(string cmd, string[] args) 
     {
         if (string.IsNullOrEmpty(args[0])) 
@@ -145,7 +144,73 @@ public class DebugConsole : MonoBehaviour
 
                 break;
             case "armor":
+                if (string.IsNullOrEmpty(args[1]) || string.IsNullOrEmpty(args[2]))
+                    { LogMessage("Invalid Args"); return; }
+                ArmorDefinition armor = null;
+                if (!string.IsNullOrEmpty(args[3])) 
+                {
+                    armor = armorDatabase.GetArmorByName(args[3].ToLower());
+                    if (!armor)
+                    {
+                        LogMessage("Invalid Armor");
+                        return;
+                    }
+                }                
 
+                ArmorSlot slot = ArmorSlot.None;
+                switch (args[2].ToLower())
+                {
+                    case "head":
+                        slot = ArmorSlot.Head;
+                        break;
+                    case "torso":
+                        slot = ArmorSlot.Torso;
+                        break;
+                    case "leftarm":
+                        slot = ArmorSlot.LeftArm;
+                        break;
+                    case "rightarm":
+                        slot = ArmorSlot.RightArm;
+                        break;
+                    case "leftleg":
+                        slot = ArmorSlot.LeftLeg;
+                        break;
+                    case "rightleg":
+                        slot = ArmorSlot.RightLeg;
+                        break;
+                }
+
+                if(slot == ArmorSlot.None) 
+                {
+                    LogMessage("Invalid Slot");
+                    return;
+                }
+
+                switch (args[1].ToLower()) 
+                {
+                    case "set":
+                        if(armor)
+                            playerArmor.Set(slot, armor);
+                        else 
+                        {
+                            LogMessage("Invalid Armor");
+                            return;
+                        }
+                            break;
+                    case "remove":
+                        playerArmor.Remove(slot);
+                        break;
+                }
+                break;
+            case "teleport":
+                if (string.IsNullOrEmpty(args[1]) || string.IsNullOrEmpty(args[2])
+                    || string.IsNullOrEmpty(args[3])) { LogMessage("Invalid Args"); return; }
+
+                float.TryParse(args[1], out float x);
+                float.TryParse(args[2], out float y);
+                float.TryParse(args[3], out float z);
+
+                playerMovement.Teleport(new Vector3(x, y, z));                
                 break;
             default: break;
         }

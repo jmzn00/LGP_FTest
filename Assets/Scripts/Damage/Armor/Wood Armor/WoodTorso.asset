@@ -10,14 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 47b12db397b4f32428b27beaca8457cb, type: 3}
-  m_Name: WoodLeftLegArmor
+  m_Name: WoodTorso
   m_EditorClassIdentifier: Assembly-CSharp::ArmorDefinition
   rule:
-    displayName: Wood Leg Armor
-    slot: 5
-    damageMultiplier: 0.85
+    displayName: WoodTorso
+    slot: 2
+    damageMultiplier: 0.8
     flatReduction: 0
     immuneToMelee: 0
     immuneToAll: 0
-    vfxTagOverride: WoodHit
-    sfxTagOverride: WoodHit
+    destroyable: 1
+    armorHealth: 50
+    vfxTagOverride: 
+    sfxTagOverride: 
