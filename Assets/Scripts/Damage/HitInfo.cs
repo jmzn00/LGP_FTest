@@ -1,5 +1,6 @@
 using UnityEngine;
 public enum  HitOutcome { Normal, Weakpoint, ArmorImmune, Blocked, Resisted, Killed}
+public enum ArmorSlot { None, Head, Torso, LeftArm, RightArm, LeftLeg, RightLeg }
 
 public struct HitInfo 
 {
@@ -11,7 +12,7 @@ public struct HitInfo
     public bool isMelee;
 
     public float baseDamage;
-    public Collider hitCollider;
+    public Hitbox Hitbox;
     public GameObject instigator;
 }
 public struct HitResult 
