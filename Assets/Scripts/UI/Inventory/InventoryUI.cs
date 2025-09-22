@@ -45,6 +45,17 @@ public class InventoryUI : MonoBehaviour
     [Header("Audio")]
     [SerializeField] private AudioSource uiAudioSource;
     [SerializeField] private AudioClip slotHoverSound;
+
+
+
+
+    [Header("Panels")]
+    [SerializeField] private GameObject itemInventory;
+    [SerializeField] private GameObject armorInventory;
+
+    [SerializeField] private UnityEngine.UI.Button itemInventoryButton;
+    [SerializeField] private UnityEngine.UI.Button armorInventoryButton;
+
     private void Awake()
     {
         _buttonMap = new Dictionary<ItemAction, UnityEngine.UI.Button>()
@@ -61,6 +72,8 @@ public class InventoryUI : MonoBehaviour
         _actionExecutor = GetComponent<ItemActionExecutor>();
         _playerUiManager = GetComponent<PlayerUiManager>();
 
+        itemInventoryButton.onClick.AddListener(OpenItemInventory);
+        armorInventoryButton.onClick.AddListener(OpenArmorInventory);
 
     }
     private void Start()
@@ -78,9 +91,38 @@ public class InventoryUI : MonoBehaviour
         InputManager.Instance.Actions.UI.Navigate.performed += ctx => OnNavigate(ctx.ReadValue<Vector2>());
         InputManager.Instance.Actions.UI.OpenInventory.performed += ctx => ToggleInventory(true);
         InputManager.Instance.Actions.UI.Submit.performed += ctx => OnSelect();
+        InputManager.Instance.Actions.UI.NavgateInventoryPanel.performed += ctx => NavigatePanels((int)ctx.ReadValue<float>());
 
     }
+    #region InventoryPanels
+    public void NavigatePanels(int val) // for controller
+    {
+        if (val > 0)
+            OpenItemInventory();
+        else
+            OpenArmorInventory();
+    }
+    public void CloseAllPanels() 
+    {
+        itemInventory.SetActive(false);
+        armorInventory.SetActive(false);
 
+        itemInventoryButton.GetComponent<Image>().color = Color.white;
+        armorInventoryButton.GetComponent<Image>().color = Color.white;
+    }
+    public void OpenItemInventory() 
+    {
+        CloseAllPanels();
+        itemInventory.SetActive(true);
+        itemInventoryButton.GetComponent<Image>().color = Color.gray;
+    }
+    public void OpenArmorInventory() 
+    {
+        CloseAllPanels();
+        armorInventory.SetActive(true);
+        armorInventoryButton.GetComponent<Image>().color = Color.gray;
+    }
+    #endregion
     #region Controller Navigation
     private void OnSelect() 
     {

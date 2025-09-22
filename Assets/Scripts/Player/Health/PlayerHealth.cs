@@ -23,11 +23,10 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         ArmorDefinition armor = armorLoadout.Get(hitInfo.Hitbox.slot);
         if (!armor) 
         {
-            Debug.Log($"No Armor On {hitInfo.Hitbox.slot}");
             HitResult result = new HitResult
             {
                 damageApplied = hitInfo.baseDamage,
-                outcome = HitOutcome.Normal
+                outcome = HitOutcome.Normal                
             };
             return result;
         }
@@ -40,14 +39,16 @@ public class PlayerHealth : MonoBehaviour, IDamageable
                     damageApplied = 0f,
                     outcome = HitOutcome.ArmorImmune
                 };
+                TakeDamage(r.damageApplied);
                 return r;
             }
 
             HitResult result = new HitResult
             {
                 damageApplied = hitInfo.baseDamage * armor.rule.damageMultiplier,
-                outcome = HitOutcome.Resisted
+                outcome = HitOutcome.Resisted                
             };
+            TakeDamage(result.damageApplied);
             return result;
         }
     }
@@ -75,6 +76,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     private void TakeDamage(float damage) 
     {
         _currentHealth -= damage;
+        _currentHealth = Mathf.Clamp(_currentHealth, 0, maxHealth);
         OnHealthChanged(_currentHealth);
     }
 

@@ -1,9 +1,5 @@
-using System.Collections;
-using Unity.VisualScripting;
+using System;
 using UnityEngine;
-using UnityEngine.InputSystem.Controls;
-using UnityEngine.InputSystem.Interactions;
-using UnityEngine.iOS;
 
 public class ArmorLoadout : MonoBehaviour
 {
@@ -15,6 +11,8 @@ public class ArmorLoadout : MonoBehaviour
 
     [SerializeField] private ArmorDefinition leftLeg;
     [SerializeField] private ArmorDefinition rightLeg;
+
+    public event Action<ArmorSlot, ArmorDefinition> OnArmorChanged;
 
     public ArmorDefinition Get(ArmorSlot slot) 
     {
@@ -29,12 +27,17 @@ public class ArmorLoadout : MonoBehaviour
             default: return null;
         }
     }
-    public void Set(ArmorSlot slot, ArmorDefinition def) 
+    public bool Set(ArmorSlot slot, ArmorDefinition def) 
     {
+        if(def == null) 
+        {
+            Debug.LogWarning("Def is null", this);
+            return false;
+        }
         if (def.rule.slot != slot) 
         {
             Debug.Log("Incorrect Armor for Slot");
-            return;
+            return false;
         }
 
         switch (slot) 
@@ -45,18 +48,26 @@ public class ArmorLoadout : MonoBehaviour
             case ArmorSlot.RightArm: rightArm = def; break;
             case ArmorSlot.LeftLeg: leftLeg = def; break;
             case ArmorSlot.RightLeg: rightLeg = def; break;
+            default: return false;
         }
+        OnArmorChanged?.Invoke(slot, def);
+        return true;
     }
-    public void Remove(ArmorSlot slot) 
+    public bool Remove(ArmorSlot slot) 
     {
+        ArmorDefinition old = Get(slot);
         switch (slot) 
         {
             case ArmorSlot.Head: head = null; break;
             case ArmorSlot.Torso: torso = null; break;
             case ArmorSlot.LeftArm: leftArm = null; break;
             case ArmorSlot.RightArm: rightArm = null; break;
-            case ArmorSlot.LeftLeg:  leftArm = null; break;
+            case ArmorSlot.LeftLeg:  leftLeg = null; break;
             case ArmorSlot.RightLeg: rightLeg = null; break;
+            default: return false;
         }
+
+        OnArmorChanged?.Invoke(slot, null);
+        return old != null;
     }
 }

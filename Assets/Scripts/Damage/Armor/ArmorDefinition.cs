@@ -20,6 +20,8 @@ public class ArmorDefinition : ScriptableObject
 
         public string vfxTagOverride;
         public string sfxTagOverride;
+
+        public Color tempColor;
     }
 
     [Header("Default Rule")]

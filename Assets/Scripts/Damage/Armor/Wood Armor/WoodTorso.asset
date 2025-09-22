@@ -23,3 +23,4 @@ MonoBehaviour:
     armorHealth: 50
     vfxTagOverride: 
     sfxTagOverride: 
+    tempColor: {r: 1, g: 0.8039216, b: 0, a: 1}

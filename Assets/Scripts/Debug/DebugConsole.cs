@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
 
 public class DebugConsole : MonoBehaviour
 {
@@ -11,6 +9,14 @@ public class DebugConsole : MonoBehaviour
     [SerializeField] private GameObject consoleGo;
     [SerializeField] private TMP_InputField inputField;
     [SerializeField] private TMP_Text consoleLog;
+
+    [Header("PlayerCommandReferences")]
+    [SerializeField] private PlayerHealth playerHealth;
+    [SerializeField] private ArmorLoadout playerArmor;
+    [SerializeField] private MovementController playerMovement;
+
+    [Header("Database")]
+    [SerializeField] private ArmorDatabase armorDatabase;
 
     private List<string> prevCommands = new();
 
@@ -79,20 +85,17 @@ public class DebugConsole : MonoBehaviour
         if (cmd.StartsWith("P_")) 
         {
             HandlePlayerCommand(cmd, args);
-        }        
-    }
-    [Header("PlayerCommandReferences")]
-    [SerializeField] private PlayerHealth playerHealth;
-    [SerializeField] private ArmorLoadout playerArmor;
-    [SerializeField] private MovementController playerMovement;
-
-    [Header("Database")]
-    [SerializeField] private ArmorDatabase armorDatabase;
+        }
+        if (cmd.StartsWith("Help")) 
+        {
+            
+        }
+    }    
     private void HandlePlayerCommand(string cmd, string[] args) 
     {
         if (string.IsNullOrEmpty(args[0])) 
         {
-            LogMessage("Arg 0 Invalid");
+            LogMessage("Arg0 Invalid", Color.red);
             return;
         }
 
@@ -101,7 +104,7 @@ public class DebugConsole : MonoBehaviour
             case "damage":
                 if (string.IsNullOrEmpty(args[1])) 
                 {
-                    LogMessage("Arg 1 Invalid");
+                    LogMessage("Arg1 Invalid", Color.red);
                     return;
                 }
                 Hitbox hitbox;
@@ -131,7 +134,7 @@ public class DebugConsole : MonoBehaviour
 
                 if (!hitbox || string.IsNullOrEmpty(args[2])) 
                 {
-                    LogMessage("Error");
+                    LogMessage("Error", Color.red);
                     return;
                 }
                 
@@ -145,17 +148,21 @@ public class DebugConsole : MonoBehaviour
                 break;
             case "armor":
                 if (string.IsNullOrEmpty(args[1]) || string.IsNullOrEmpty(args[2]))
-                    { LogMessage("Invalid Args"); return; }
+                    { LogMessage("Invalid Args", Color.red); return; }
                 ArmorDefinition armor = null;
-                if (!string.IsNullOrEmpty(args[3])) 
-                {
-                    armor = armorDatabase.GetArmorByName(args[3].ToLower());
-                    if (!armor)
+
+                if (args[1].ToLower() != "remove") 
+                {                                            
+                    if (!string.IsNullOrEmpty(args[3]))
                     {
-                        LogMessage("Invalid Armor");
-                        return;
+                        armor = armorDatabase.GetArmorByName(args[3].ToLower());
+                        if (!armor)
+                        {
+                            LogMessage("Invalid Armor", Color.yellow);
+                            return;
+                        }
                     }
-                }                
+                }                                            
 
                 ArmorSlot slot = ArmorSlot.None;
                 switch (args[2].ToLower())
@@ -182,29 +189,33 @@ public class DebugConsole : MonoBehaviour
 
                 if(slot == ArmorSlot.None) 
                 {
-                    LogMessage("Invalid Slot");
+                    LogMessage("Invalid Slot", Color.yellow);
                     return;
                 }
 
                 switch (args[1].ToLower()) 
                 {
                     case "set":
-                        if(armor)
+                        if (armor) 
+                        {
                             playerArmor.Set(slot, armor);
+                            LogMessage($"{armor.rule.displayName} set to {slot}");
+                        }                        
                         else 
                         {
-                            LogMessage("Invalid Armor");
+                            LogMessage("Invalid Armor", Color.yellow);
                             return;
                         }
                             break;
                     case "remove":
                         playerArmor.Remove(slot);
+                        LogMessage($"{slot} armor removed");
                         break;
                 }
                 break;
             case "teleport":
                 if (string.IsNullOrEmpty(args[1]) || string.IsNullOrEmpty(args[2])
-                    || string.IsNullOrEmpty(args[3])) { LogMessage("Invalid Args"); return; }
+                    || string.IsNullOrEmpty(args[3])) { LogMessage("Invalid Args", Color.red); return; }
 
                 float.TryParse(args[1], out float x);
                 float.TryParse(args[2], out float y);
@@ -212,13 +223,19 @@ public class DebugConsole : MonoBehaviour
 
                 playerMovement.Teleport(new Vector3(x, y, z));                
                 break;
-            default: break;
+            default:
+                LogMessage("Invalid Arg0", Color.red);
+            break;
         }
     }
 
-    private void LogMessage(string message) 
+    private void LogMessage(string message, Color? color = null) 
     {
-        consoleLog.text += "\n" + message;
+
+        Color finalColor = color ?? Color.white;
+
+        string hexColor = ColorUtility.ToHtmlStringRGB(finalColor);
+        consoleLog.text += $"\n<color=#{hexColor}>{message}</color>";
         inputField.text = "";
     }
 }
