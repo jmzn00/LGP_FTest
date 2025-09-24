@@ -1,28 +1,28 @@
 using UnityEngine;
 
+[DefaultExecutionOrder(-100)] // run early
 public class InputManager : MonoBehaviour
 {
     private InputSystem_Actions actions = null;
 
-    public InputSystem_Actions Actions => actions;
-
-    public static InputManager Instance { get; private set; }
+    public InputSystem_Actions Actions => actions;   
 
     private void Awake()
     {
-        if(Instance != null) 
-        {
-            Debug.LogWarning("Multiple instances of InputManager");
-            Destroy(this.gameObject);
-        }
-        
-        Instance = this;
+        GameServices.Input = this;
 
-        if(actions == null)
-            actions = new InputSystem_Actions();
-
+        actions ??= new InputSystem_Actions();        
+    }
+    private void OnEnable()
+    {
         TogglePlayerInputs(true);
         ToggleUiInputs(true);
+    }
+    private void OnDisable()
+    {
+        actions.Disable();
+        if (GameServices.Input == this) GameServices.Input = null;
+
     }
 
     public void TogglePlayerInputs(bool value) 
@@ -47,10 +47,5 @@ public class InputManager : MonoBehaviour
             actions.UI.Enable();
         else
             actions.UI.Disable();
-    }
-
-    private void OnDisable()
-    {
-        actions.Disable();
-    }
+    }    
 }

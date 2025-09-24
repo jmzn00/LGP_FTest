@@ -82,16 +82,11 @@ public class InventoryUI : MonoBehaviour
     }
     private void SubscribeInputs()
     {
-        if (InputManager.Instance == null)
-        {
-            Debug.LogError("InputManager Instance is NULL");
-            return;
-        }
-        InputManager.Instance.Actions.UI.Cancel.performed += ctx => OnCancel();
-        InputManager.Instance.Actions.UI.Navigate.performed += ctx => OnNavigate(ctx.ReadValue<Vector2>());
-        InputManager.Instance.Actions.UI.OpenInventory.performed += ctx => ToggleInventory(true);
-        InputManager.Instance.Actions.UI.Submit.performed += ctx => OnSelect();
-        InputManager.Instance.Actions.UI.NavgateInventoryPanel.performed += ctx => NavigatePanels((int)ctx.ReadValue<float>());
+        GameServices.Input.Actions.UI.Cancel.performed += ctx => OnCancel();
+        GameServices.Input.Actions.UI.Navigate.performed += ctx => OnNavigate(ctx.ReadValue<Vector2>());
+        GameServices.Input.Actions.UI.OpenInventory.performed += ctx => ToggleInventory(true);
+        GameServices.Input.Actions.UI.Submit.performed += ctx => OnSelect();
+        GameServices.Input.Actions.UI.NavgateInventoryPanel.performed += ctx => NavigatePanels((int)ctx.ReadValue<float>());
 
     }
     #region InventoryPanels
@@ -286,7 +281,7 @@ public class InventoryUI : MonoBehaviour
         InventoryOpen = value;
 
         inventoryPanel.SetActive(InventoryOpen);
-        InputManager.Instance?.TogglePlayerInputs(!InventoryOpen);
+        GameServices.Input.TogglePlayerInputs(!InventoryOpen);
     }
     public void OnInventorySlotsChanged(int oldValue, int newValue)
     {

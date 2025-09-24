@@ -79,13 +79,8 @@ public class ItemDetection : MonoBehaviour
     }
     private void SubscribeInputs() 
     {
-        if(InputManager.Instance == null) 
-        {
-            Debug.LogError("InputManager Instance is NULL");
-            return;
-        }
 
-        InputManager.Instance.Actions.Player.Interact.performed += ctx =>
+        GameServices.Input.Actions.Player.Interact.performed += ctx =>
         {
             if (_current != null)
             {
@@ -94,7 +89,7 @@ public class ItemDetection : MonoBehaviour
             else
                 Debug.Log("_current is NULL");
         };
-        InputManager.Instance.Actions.Player.Interact.canceled += ctx =>
+        GameServices.Input.Actions.Player.Interact.canceled += ctx =>
         {
             if (_current != null)
             {

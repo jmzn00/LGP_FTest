@@ -31,7 +31,7 @@ public class LockInteraction : MonoBehaviour
         {
             _cameraController.SetCameraFocusInteractable(_currentLock);
             _currentLock.PlayAnimation(InteractableAnimationType.Unlock);
-            Debug.Log($"Lock {_lockId} Unlocked with key {id}");
+            _currentLock = null;
             return true;
         }
         Debug.Log($"Wrong Key {id} for {_lockId}");

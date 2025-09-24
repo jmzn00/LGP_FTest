@@ -14,9 +14,11 @@ public class DebugConsole : MonoBehaviour
     [SerializeField] private PlayerHealth playerHealth;
     [SerializeField] private ArmorLoadout playerArmor;
     [SerializeField] private MovementController playerMovement;
+    [SerializeField] private PlayerInventory playerInventory;
 
     [Header("Database")]
     [SerializeField] private ArmorDatabase armorDatabase;
+    [SerializeField] private ItemDatabase itemDatabase;
 
     private List<string> prevCommands = new();
 
@@ -28,12 +30,7 @@ public class DebugConsole : MonoBehaviour
 
     private void SubscribeInputs() 
     {
-        if(InputManager.Instance == null) 
-        {
-            Debug.LogError("InputManager is NULL");
-            return;
-        }
-        var debug = InputManager.Instance.Actions.Debug;
+        var debug = GameServices.Input.Actions.Debug;
 
         debug.Enable();
         debug.ToggleConsole.performed += OnToggleConsole;
@@ -64,8 +61,8 @@ public class DebugConsole : MonoBehaviour
         bool show = !consoleGo.activeInHierarchy;
 
         consoleGo.SetActive(show);
-        InputManager.Instance.TogglePlayerInputs(!show);
-        InputManager.Instance.ToggleUiInputs(!show);
+        GameServices.Input.TogglePlayerInputs(!show);
+        GameServices.Input.ToggleUiInputs(!show);
 
     }
     private void ParseInputCommand(string command)
@@ -222,6 +219,37 @@ public class DebugConsole : MonoBehaviour
                 float.TryParse(args[3], out float z);
 
                 playerMovement.Teleport(new Vector3(x, y, z));                
+                break;
+            case "inventory":
+                if (string.IsNullOrEmpty(args[1]) 
+                    || string.IsNullOrEmpty(args[2])) return;
+                
+                switch (args[1].ToLower()) 
+                {
+                    case "addslot":
+                        int.TryParse(args[2], out int amount);
+                        if (playerInventory.TryAddSlot(amount)) 
+                        {
+                            LogMessage($"Added {amount} slots");
+                            return;
+                        }
+                        LogMessage("Slots Full", Color.yellow);                        
+                        break;
+                    case "additem":
+                        InventoryItem item = itemDatabase.GetItemByName(args[2]);
+                        if (!item)
+                        {
+                            LogMessage($"Invalid Item {args[2]}", Color.yellow);
+                            return;
+                        }
+                        if (playerInventory.TryAdd(item)) 
+                        {
+                            LogMessage($"Added {item.displayName}");
+                            return;                            
+                        }
+                        LogMessage($"Couldnt add {item.displayName}");                        
+                        break;
+                }
                 break;
             default:
                 LogMessage("Invalid Arg0", Color.red);

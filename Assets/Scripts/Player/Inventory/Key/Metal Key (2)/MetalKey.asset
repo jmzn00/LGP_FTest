@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96c07b40b70b75b40835af2ffeb1db10, type: 3}
   m_Name: MetalKey
   m_EditorClassIdentifier: Assembly-CSharp::InventoryItem
-  displayName: Metal Key
+  displayName: MetalKey
   description: This key unlocks a lock
+  displayDescriptionInUI: 1
   sprite: {fileID: 21300000, guid: 7972fd91efef3684b8dc13db8c90ee8e, type: 3}
+  inspectPrefab: {fileID: 0}
   worldPrefab: {fileID: 6141712895884774253, guid: e07ad81f5e32b1f489bb694da58d9e13, type: 3}
   maxStack: 1
   _actions: 0000000002000000

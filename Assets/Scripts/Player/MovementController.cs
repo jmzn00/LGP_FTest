@@ -61,43 +61,41 @@ public class MovementController : MonoBehaviour
 
     private MovingPlatform _currentPlatform;
     private Vector3 _lastPlatformPosition;
-    
 
-    private void Start()
+    InputAction _lookAction;
+    private float _yaw;
+    private float _pitch;
+    private void Awake()
     {
         SubscribeInputs();
-
+    }
+    private void Start()
+    {
         _rb = GetComponent<Rigidbody>();
         _cameraController = GetComponent<CameraController>();
     }
-    InputAction _lookAction;
+    
     #region Inputs
     private void SubscribeInputs()
     {
-        if(InputManager.Instance == null) 
-        {
-            Debug.LogError("InputManager is NULL");
-            return;
-        }
-        InputManager.Instance.Actions.Player.Move.performed += ctx => _moveInput = ctx.ReadValue<Vector2>();
-        InputManager.Instance.Actions.Player.Move.canceled += ctx => _moveInput = Vector2.zero;
+        GameServices.Input.Actions.Player.Move.performed += ctx => _moveInput = ctx.ReadValue<Vector2>();
+        GameServices.Input.Actions.Player.Move.canceled += ctx => _moveInput = Vector2.zero;
 
-        InputManager.Instance.Actions.Player.Look.performed += ctx => _lookInput = ctx.ReadValue<Vector2>();
-        InputManager.Instance.Actions.Player.Look.canceled += ctx => _lookInput = Vector3.zero;
+        GameServices.Input.Actions.Player.Look.performed += ctx => _lookInput = ctx.ReadValue<Vector2>();
+        GameServices.Input.Actions.Player.Look.canceled += ctx => _lookInput = Vector3.zero;
 
-        _lookAction = InputManager.Instance.Actions.Player.Look;
+        _lookAction = GameServices.Input.Actions.Player.Look;
 
-        InputManager.Instance.Actions.Player.Jump.performed += ctx => jumpPending = true;
-        InputManager.Instance.Actions.Player.Jump.canceled += ctx => jumpPending = false;
+        GameServices.Input.Actions.Player.Jump.performed += ctx => jumpPending = true;
+        GameServices.Input.Actions.Player.Jump.canceled += ctx => jumpPending = false;
 
-        InputManager.Instance.Actions.Player.ToggleThirdPerson.performed += ctx => isThirdPersonCamera = !isThirdPersonCamera;
+        GameServices.Input.Actions.Player.ToggleThirdPerson.performed += ctx => isThirdPersonCamera = !isThirdPersonCamera;
         //InputManager.Instance.Actions.Player.ToggleThirdPerson.canceled += ctx => isThirdPersonCamera = false;
 
         //InputManager.Instance.Actions.Player.Sprint.performed += ctx => dashPending = true;
 
-        InputManager.Instance.Actions.Player.Crouch.performed += ctx => Crouch(true);
-        InputManager.Instance.Actions.Player.Crouch.canceled += ctx => Crouch(false);
-
+        GameServices.Input.Actions.Player.Crouch.performed += ctx => Crouch(true);
+        GameServices.Input.Actions.Player.Crouch.canceled += ctx => Crouch(false);               
     }
     private void GetMovementInput()
     {
@@ -142,10 +140,7 @@ public class MovementController : MonoBehaviour
         }
 
     }
-    #endregion
-    private float _yaw;
-    private float _pitch;
-
+    #endregion   
     private void Update()
     {
         GetMovementInput();

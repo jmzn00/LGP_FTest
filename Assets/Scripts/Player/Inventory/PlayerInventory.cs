@@ -41,15 +41,23 @@ public class PlayerInventory : MonoBehaviour
 
     private void SubscribeInputs() 
     {
-        if(InputManager.Instance == null) 
-        {
-            Debug.LogError("InputManager Instance is NULL");
-            return;
-        }
         //InputManager.Instance.Actions.UI.OpenInventory.performed += ctx => CheckInventoryItems();
         //InputManager.Instance.Actions.UI.Navigate.performed += ctx => NavigateInventory(ctx.ReadValue<Vector2>());
         //InputManager.Instance.Actions.UI.OpenInventory.canceled += ctx => CheckInventoryItems();
 
+    }
+    public bool TryAddSlot(int amt) 
+    {
+        if(_inventorySlots >= _maxInventorySlots) 
+        {
+            return false;
+        }
+        int oldValue = _inventorySlots;
+        _inventorySlots += amt;
+        _inventorySlots = Mathf.Clamp(_inventorySlots, 0, _maxInventorySlots);
+        OnInventorySlotsChanged(oldValue, _inventorySlots);
+        return true;
+        
     }
     public void AddInventorySlots(int amt) 
     {

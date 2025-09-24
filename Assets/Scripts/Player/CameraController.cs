@@ -36,12 +36,7 @@ public class CameraController : MonoBehaviour
 
     private void Start()
     {
-        if(InputManager.Instance == null) 
-        {
-            Debug.LogError("InputManager is NULL");
-            return;
-        }
-        InputManager.Instance.Actions.Player.Zoom.performed += ctx => InspectableZoom(ctx.ReadValue<float>());
+        GameServices.Input.Actions.Player.Zoom.performed += ctx => InspectableZoom(ctx.ReadValue<float>());
     }
     private void Update()
     {
